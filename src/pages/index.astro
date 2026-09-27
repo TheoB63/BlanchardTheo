@@ -1,31 +1,115 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+// ==========================================================================
+// index.astro — the home page  (URL: /)
+// --------------------------------------------------------------------------
+// Two zones, as requested:
+//   1. Intro.astro        -> image zone, name, subtitle, row of logo links
+//   2. ProjectRail.astro -> the horizontal list of projects, with the arrows
+//                           below it and drag-to-scroll
+//
+// The projects come from src/project-list.ts (which reads the collection
+// defined in src/content.config.ts), so this file never changes when you add a
+// project. Every build prints in the terminal how many were found.
+// ==========================================================================
+import { listProjects } from '../project-list';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Intro from '../components/Intro.astro';
+import ProjectRail from '../components/ProjectRail.astro';
+import Bilingual from '../components/Bilingual.astro';
+import EmptyProjects from '../components/EmptyProjects.astro';
+
+// Already sorted, newest first.
+const projects = await listProjects();
 ---
 
 <BaseLayout>
 	<div class="content">
-		<h2>Welcome</h2>
-		<p>Little description</p>
-		<p>List of projects</p>		
-		<a href="/Books">Take a look at my projects</a>
+		<!-- 1. Name, image zone and links -->
+		<Intro />
+
+		<!-- 2. The projects -->
+		<section class="projects-section">
+			<div class="section-head">
+				<h2><Bilingual k="home.projectsTitle" /></h2>
+			</div>
+
+			<!--
+			  EmptyProjects appears only when src/projects/ has no usable .md
+			  file. It explains on the page what to check, which is faster than
+			  hunting for a silent build error.
+			-->
+			{
+				projects.length > 0 ? (
+					<ProjectRail projects={projects} />
+				) : (
+					<EmptyProjects />
+				)
+			}
+
+			<p class="all-projects">
+				<a href="/projects" class="button"><Bilingual k="home.allProjects" /></a>
+			</p>
+		</section>
 	</div>
 </BaseLayout>
 
 <style>
+	/* The intro is centred, the project section is left-aligned: the two zones
+	   read differently on purpose. */
 	.content {
 		text-align: center;
 	}
-	a {
+
+	.projects-section {
+		text-align: left;
+		margin-top: 50px;
+	}
+
+	.section-head {
+		margin-bottom: 18px;
+	}
+
+	.section-head h2 {
+		margin: 0;
+	}
+
+	.hint {
+		margin: 4px 0 0 !important;
+		font-size: 0.95rem !important;
+		font-weight: 300;
+		color: #8a8398;
+	}
+
+	.all-projects {
+		margin-top: 24px;
+		text-align: center;
+	}
+
+	/* Same button as the starter kit had, so the look stays consistent. */
+	.button {
 		display: inline-block;
 		background-color: #7a49c5;
 		color: #fff;
 		padding: 6px 10px;
 		border-radius: 2px;
 		text-decoration: none;
-		margin-top: 20px;
+		font-size: 1rem;
+	}
 
-		&:hover {
-			background-color: #965ee9;
-		}
+	.button:hover {
+		background-color: #965ee9;
+	}
+</style>
+
+<!--
+  Unscoped on purpose: .rail-block is rendered by ProjectRail.astro, so a
+  scoped selector from this page can never match it (see the note in
+  ProjectRail.astro). The selector is prefixed with .projects-section, which
+  only exists on this page, so it stays local in practice.
+-->
+<style is:global>
+	/* The rail must be able to scroll sideways even inside a centred block. */
+	.projects-section .rail-block {
+		width: 100%;
 	}
 </style>

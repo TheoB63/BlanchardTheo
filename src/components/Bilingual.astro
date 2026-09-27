@@ -1,0 +1,50 @@
+---
+// ==========================================================================
+// Bilingual.astro — prints a text in both languages, shows only one.
+// --------------------------------------------------------------------------
+// The smallest reusable piece of the i18n system. It renders:
+//
+//   <span lang="fr" class="bilingual">Accueil</span>
+//   <span lang="en" class="bilingual">Home</span>
+//
+// and the CSS in src/layouts/BaseLayout.astro hides the span that does not
+// match <html data-lang="...">. No JavaScript, no reload when switching.
+//
+// Three ways to use it:
+//   <Bilingual k="nav.home" />            text from src/i18n/translations/
+//   <Bilingual fr="Bonjour" en="Hello" /> text written on the spot
+//   <Bilingual en="Hello"><em>Bonjour</em></Bilingual>
+//                                         the French side is the slot, so it
+//                                         can contain markup or variables
+// ==========================================================================
+import { all as translations, type TKey } from '../i18n/index';
+
+interface Props {
+	/** A key from src/i18n/translations/ (common, home, projects, about). */
+	k?: TKey;
+	/** Or the two texts directly. */
+	fr?: string;
+	en?: string;
+	/** Extra class added to both spans. */
+	class?: string;
+}
+
+const { k, fr, en, class: className } = Astro.props;
+
+// A key wins over the inline texts; the slot wins over the inline `fr`.
+const entry = k ? translations[k] : undefined;
+const frText = fr ?? entry?.fr ?? null;
+const enText = en ?? entry?.en ?? null;
+const hasSlot = Astro.slots.has('default');
+---
+
+{
+	hasSlot ? (
+		<span lang="fr" class:list={['bilingual', className]}>
+			<slot />
+		</span>
+	) : frText ? (
+		<span lang="fr" class:list={['bilingual', className]}>{frText}</span>
+	) : null
+}
+{enText && <span lang="en" class:list={['bilingual', className]}>{enText}</span>}

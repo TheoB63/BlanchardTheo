@@ -1,0 +1,48 @@
+---
+// ==========================================================================
+// SiteFooter.astro — the footer of every page.
+// --------------------------------------------------------------------------
+// It is included by src/layouts/BaseLayout.astro, so you never have to put it
+// in a page yourself.
+//
+// Content: the reusable row of links (LinkBar.astro) + your name + year.
+// ==========================================================================
+import LinkBar from './LinkBar.astro';
+import Bilingual from './Bilingual.astro';
+import { siteName } from '../site';
+
+// Computed at build time, so no JavaScript is needed for the year.
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+	<div class="footer-links">
+		<LinkBar size="sm" />
+	</div>
+
+	<p class="footer-line">
+		© {year} {siteName} — <Bilingual k="footer.rights" />
+	</p>
+</footer>
+
+<style>
+	.footer {
+		margin-top: 60px;
+		padding: 24px 20px 32px;
+		border-top: 1px solid #e6e0f2;
+		background: #f9f6fc;
+		text-align: center;
+	}
+
+	.footer-links {
+		display: flex;
+		justify-content: center;
+		margin-bottom: 14px;
+	}
+
+	.footer-line {
+		margin: 0;
+		font-size: 0.85rem;
+		color: #8a8398;
+	}
+</style>

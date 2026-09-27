@@ -1,0 +1,123 @@
+---
+// ==========================================================================
+// Intro.astro — the top zone of the home page.
+// --------------------------------------------------------------------------
+// (This is the component a lot of sites call a "hero": the big block at the
+// top. It is named Intro here because that is what it is: your introduction.)
+//
+// It contains, from top to bottom:
+//   1. the image zone   -> drop your own image, see src/site.ts
+//   2. your name        -> it is a title, NOT a link
+//   3. a short subtitle, in both languages
+//   4. the row of links -> LinkBar.astro, the reusable component (GitHub,
+//                          LinkedIn, email, phone, CV: all set in src/site.ts)
+//
+// Everything that can change lives in src/site.ts: siteName, introSubtitle,
+// introImage and the `contact` block (which builds the links). This file is
+// only the layout.
+// ==========================================================================
+import LinkBar from './LinkBar.astro';
+import { siteName, introSubtitle, introImage, introImageHint } from '../site';
+
+// `introImage` stays `null` until you add a file (see the comment in
+// src/site.ts). An imported image is an object with .src / .width / .height.
+const img = introImage as { src: string; width?: number; height?: number } | null;
+---
+
+<section class="intro">
+	<!-- 1. The image zone ------------------------------------------------- -->
+	<div class="intro-media">
+		<!--
+		  While introImage is null, a placeholder explains what to do, in both
+		  languages, so the page is never empty or broken.
+		-->
+		{
+			img ? (
+				<img src={img.src} width={img.width} height={img.height} alt={siteName} />
+			) : (
+				<div class="intro-placeholder">
+					<span lang="fr">{introImageHint.fr}</span>
+					<span lang="en">{introImageHint.en}</span>
+				</div>
+			)
+		}
+	</div>
+
+	<!-- 2 + 3. Name and subtitle ----------------------------------------- -->
+	<h2 class="intro-name">{siteName}</h2>
+
+	<p class="intro-subtitle">
+		<span lang="fr">{introSubtitle.fr}</span>
+		<span lang="en">{introSubtitle.en}</span>
+	</p>
+
+	<!-- 4. The reusable row of links -------------------------------------- -->
+	<div class="intro-links">
+		<LinkBar size="md" />
+	</div>
+</section>
+
+<style>
+	.intro {
+		text-align: center;
+		padding: 10px 0 30px;
+	}
+
+	/* --- Image zone ------------------------------------------------------ */
+	.intro-media {
+		margin: 0 auto 26px;
+		max-width: 720px;
+	}
+
+	.intro-media img {
+		display: block;
+		width: 100%;
+		height: auto;
+		border: 1px solid #e6e0f2;
+		border-radius: 4px;
+	}
+
+	/* The dashed box you see before adding an image. */
+	.intro-placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 220px;
+		padding: 20px;
+		border: 1px dashed #cfc5e2;
+		border-radius: 4px;
+		background: #fbfaff;
+		color: #8a8398;
+		font-size: 0.95rem;
+		line-height: 1.5;
+	}
+
+	/* --- Text ------------------------------------------------------------ */
+	.intro-name {
+		margin: 0;
+		font-size: 2.4em;
+		font-weight: 700;
+		letter-spacing: -0.01em;
+	}
+
+	.intro-subtitle {
+		margin: 8px 0 0;
+		font-size: 1.15em;
+		font-weight: 300;
+		color: #6b6478;
+	}
+
+	/* --- Links ----------------------------------------------------------- */
+	.intro-links {
+		margin-top: 22px;
+		display: flex;
+		justify-content: center;
+	}
+
+	/* Both languages are written one after the other and only one is shown
+	   (rule defined in BaseLayout.astro), so they must stay inline. */
+	.intro-placeholder span,
+	.intro-subtitle span {
+		display: inline;
+	}
+</style>

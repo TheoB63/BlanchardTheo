@@ -1,0 +1,116 @@
+---
+// ==========================================================================
+// Hero.astro — the top zone of the home page.
+// --------------------------------------------------------------------------
+// It contains:
+//   1. the image zone  (drop your own image, see src/site.ts)
+//   2. your name
+//   3. a short subtitle, in both languages
+//   4. the row of links  (SocialLinks.astro, the reusable component)
+//
+// Everything that can change is in src/site.ts: siteName, heroSubtitle,
+// heroImage, socialLinks. This file is only the layout.
+// ==========================================================================
+import SocialLinks from './SocialLinks.astro';
+import { siteName, heroSubtitle, heroImage, heroImageHint } from '../site';
+
+// `heroImage` is `null` until you add a file (see the comment in src/site.ts).
+// An imported image is an object with .src / .width / .height.
+const img = heroImage as { src: string; width?: number; height?: number } | null;
+---
+
+<section class="hero">
+	<!-- 1. The image zone ------------------------------------------------ -->
+	<div class="hero-media">
+		{
+			img ? (
+				<img src={img.src} width={img.width} height={img.height} alt={siteName} />
+			) : (
+				// Placeholder shown while heroImage is null. It explains what to do,
+				// in both languages, so the page is never empty or broken.
+				<div class="hero-placeholder">
+					<span lang="fr">{heroImageHint.fr}</span>
+					<span lang="en">{heroImageHint.en}</span>
+				</div>
+			)
+		}
+	</div>
+
+	<!-- 2 + 3. Name and subtitle ---------------------------------------- -->
+	<h2 class="hero-name">{siteName}</h2>
+
+	<p class="hero-subtitle">
+		<span lang="fr">{heroSubtitle.fr}</span>
+		<span lang="en">{heroSubtitle.en}</span>
+	</p>
+
+	<!-- 4. The reusable row of links ------------------------------------ -->
+	<div class="hero-links">
+		<SocialLinks size="md" />
+	</div>
+</section>
+
+<style>
+	.hero {
+		text-align: center;
+		padding: 10px 0 30px;
+	}
+
+	/* --- Image zone ----------------------------------------------------- */
+	.hero-media {
+		margin: 0 auto 26px;
+		max-width: 720px;
+	}
+
+	.hero-media img {
+		display: block;
+		width: 100%;
+		height: auto;
+		border: 1px solid #e6e0f2;
+		border-radius: 4px;
+	}
+
+	/* The dashed box you see before adding an image. */
+	.hero-placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 220px;
+		padding: 20px;
+		border: 1px dashed #cfc5e2;
+		border-radius: 4px;
+		background: #fbfaff;
+		color: #8a8398;
+		font-size: 0.95rem;
+		line-height: 1.5;
+	}
+
+	/* --- Text ------------------------------------------------------------ */
+	.hero-name {
+		margin: 0;
+		font-size: 2.4em;
+		font-weight: 700;
+		letter-spacing: -0.01em;
+	}
+
+	.hero-subtitle {
+		margin: 8px 0 0;
+		font-size: 1.15em;
+		font-weight: 300;
+		color: #6b6478;
+	}
+
+	/* --- Links ----------------------------------------------------------- */
+	.hero-links {
+		margin-top: 22px;
+		display: flex;
+		justify-content: center;
+	}
+
+	/* The two languages are written one after the other; only one is shown
+	   (rule defined in BaseLayout.astro). Inline so the line stays tidy. */
+	.hero-placeholder span,
+	.hero-subtitle span {
+		display: inline;
+	}
+</style>

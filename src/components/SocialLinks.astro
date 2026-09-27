@@ -1,0 +1,130 @@
+---
+// ==========================================================================
+// SocialLinks.astro — THE reusable row of logo links.
+// --------------------------------------------------------------------------
+// Used twice: in the hero of the home page and in the footer of every page.
+//
+// The list of links is NOT written here. It lives in src/site.ts, in the
+// `socialLinks` array. To add a link (itch.io, ArtStation, Discord, X...):
+//   1. open src/site.ts
+//   2. copy one of the objects, change id / href / label / icon
+//   3. save. It appears in the hero and in the footer, in both languages.
+//
+// Props:
+//   size : 'md' (hero) or 'sm' (footer)
+// ==========================================================================
+import { socialLinks } from '../site';
+
+interface Props {
+	size?: 'sm' | 'md';
+}
+
+const { size = 'md' } = Astro.props;
+
+/** External links open in a new tab, internal ones (like /cv) do not. */
+function isExternal(href: string) {
+	return href.startsWith('http://') || href.startsWith('https://');
+}
+---
+
+<ul class:list={['links', `links--${size}`]}>
+	{
+		socialLinks.map((link) => (
+			<li>
+				<a
+					class={`link link--${link.id}`}
+					href={link.href}
+					// Both tooltips are in the HTML, CSS shows the right one.
+					title={link.label.en}
+					target={isExternal(link.href) ? '_blank' : undefined}
+					rel={isExternal(link.href) ? 'noopener noreferrer' : undefined}
+					aria-label={link.label.en}
+				>
+					{/* The icon is raw SVG markup stored in src/site.ts, so adding a
+					    new link never means editing this component. */}
+					<svg
+						class="icon"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+						focusable="false"
+						set:html={link.icon}
+					/>
+					{/* Visible name under the icon: the two languages, one shown. */}
+					<span class="link-label">
+						<span lang="fr">{link.label.fr}</span>
+						<span lang="en">{link.label.en}</span>
+					</span>
+				</a>
+			</li>
+		))
+	}
+</ul>
+
+<style>
+	/* The row: horizontal, centred, wraps on small screens. */
+	.links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.link {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		border: 1px solid #e2dcf0;
+		border-radius: 4px;
+		background: #fff;
+		color: #333;
+		text-decoration: none;
+		transition:
+			border-color 0.15s ease,
+			color 0.15s ease;
+	}
+
+	.link:hover {
+		border-color: #7a49c5;
+		color: #7a49c5;
+	}
+
+	.link:focus-visible {
+		outline: 2px solid #7a49c5;
+		outline-offset: 2px;
+	}
+
+	/* Two sizes, so the same component works in the hero and in the footer. */
+	.links--md .link {
+		padding: 9px 14px;
+	}
+	.links--md .icon {
+		width: 20px;
+		height: 20px;
+	}
+	.links--md .link-label {
+		font-size: 0.95rem;
+	}
+
+	.links--sm .link {
+		padding: 5px 10px;
+	}
+	.links--sm .icon {
+		width: 16px;
+		height: 16px;
+	}
+	.links--sm .link-label {
+		font-size: 0.85rem;
+	}
+
+	.icon {
+		flex: 0 0 auto;
+		/* Icons use currentColor, so they follow the text colour on hover. */
+		color: inherit;
+	}
+
+	.link-label {
+		white-space: nowrap;
+	}
+</style>

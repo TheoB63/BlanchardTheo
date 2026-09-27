@@ -1,0 +1,71 @@
+---
+// ==========================================================================
+// LangSwitch.astro — the two buttons that change the language: FR | EN
+// --------------------------------------------------------------------------
+// The component only draws the buttons. What happens when you click them is in
+// src/i18n/i18n.js, which looks for every [data-lang-btn] on the page.
+//
+// Because of that, you can put this component anywhere and as many times as
+// you want (header, footer, a project page...): all the switches stay in sync.
+// ==========================================================================
+import { languages, t } from '../i18n/index';
+---
+
+<div class="lang-switch" role="group" aria-label={t('lang.group', 'en')}>
+	{
+		languages.map((lang) => (
+			// `data-lang-btn` is read by i18n.js. The label is the uppercase
+			// language code: FR, EN.
+			<button
+				type="button"
+				class="lang-btn"
+				data-lang-btn={lang}
+				aria-pressed="false"
+				title={lang === 'fr' ? 'Français' : 'English'}
+			>
+				{lang.toUpperCase()}
+			</button>
+		))
+	}
+</div>
+
+<style>
+	.lang-switch {
+		display: inline-flex;
+		border: 1px solid #d8cfe8;
+		border-radius: 4px;
+		overflow: hidden;
+		background: #fff;
+	}
+
+	.lang-btn {
+		font: inherit;
+		font-size: 0.8rem;
+		letter-spacing: 0.04em;
+		padding: 3px 9px;
+		border: 0;
+		background: transparent;
+		color: #6b6478;
+		cursor: pointer;
+	}
+
+	.lang-btn + .lang-btn {
+		border-left: 1px solid #d8cfe8;
+	}
+
+	.lang-btn:hover {
+		color: #7a49c5;
+	}
+
+	/* The active language, set by i18n.js */
+	.lang-btn.is-active {
+		background: #7a49c5;
+		color: #fff;
+	}
+
+	/* Keyboard focus must stay visible */
+	.lang-btn:focus-visible {
+		outline: 2px solid #7a49c5;
+		outline-offset: -2px;
+	}
+</style>

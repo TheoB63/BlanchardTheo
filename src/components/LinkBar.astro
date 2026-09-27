@@ -1,0 +1,250 @@
+---
+// ==========================================================================
+// LinkBar.astro — THE reusable row of logo links.
+// --------------------------------------------------------------------------
+// Used three times: the intro of the home page, the about page, and the
+// footer of every page.
+//
+// The list of links is NOT written here. It is built in src/site.ts from the
+// `contact` block (GitHub, LinkedIn, email, phone) plus the CV. To add a link
+// (itch.io, ArtStation, Discord, X...), add one object to `extraLinks` at the
+// bottom of src/site.ts.
+//
+// Two kinds of entry:
+//   kind 'link' (default) -> a real link: new tab for http(s), the mailbox for
+//                           mailto:, the dialer for tel:, same tab for /cv
+//   kind 'text'           -> the value is simply displayed, with a small
+//                           "copy" button (used when contact.emailAsText is
+//                           true, so no mailbox opens)
+//
+// Props:
+//   size : 'md' (intro, about page) or 'sm' (footer)
+// ==========================================================================
+import { links } from '../site';
+import { t } from '../i18n/index';
+
+interface Props {
+	size?: 'sm' | 'md';
+}
+
+const { size = 'md' } = Astro.props;
+
+/** External links open in a new tab, internal ones (like /cv) do not. */
+function isExternal(href: string) {
+	return href.startsWith('http://') || href.startsWith('https://');
+}
+---
+
+<ul class:list={['links', `links--${size}`]}>
+	{
+		links.map((link) => (
+			<li>
+				{link.kind === 'text' ? (
+					// --- Displayed as plain text + a copy button -------------
+					<span class={`link link--text link--${link.id}`}>
+						<svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" set:html={link.icon} />
+						<span class="link-label">{link.value}</span>
+						<button
+							type="button"
+							class="copy-btn"
+							data-copy={link.value}
+							data-copied-fr={t('link.copied', 'fr')}
+							data-copied-en={t('link.copied', 'en')}
+							data-title-fr={`${t('link.copy', 'fr')} — ${link.value}`}
+							data-title-en={`${t('link.copy', 'en')} — ${link.value}`}
+							data-aria-fr={`${t('link.copy', 'fr')} — ${link.value}`}
+							data-aria-en={`${t('link.copy', 'en')} — ${link.value}`}
+						>
+							{/* Two icons: the second one replaces the first for a
+							    moment once the value is in the clipboard. */}
+							<svg class="icon-copy" viewBox="0 0 24 24" aria-hidden="true">
+								<rect x="9" y="9" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2" />
+								<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" fill="none" stroke="currentColor" stroke-width="2" />
+							</svg>
+							<svg class="icon-tick" viewBox="0 0 24 24" aria-hidden="true">
+								<path d="m4 12 6 6L20 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+							</svg>
+						</button>
+					</span>
+				) : (
+					// --- A normal link ---------------------------------------
+					<a
+						class={`link link--${link.id}`}
+						href={link.href}
+						data-title-fr={link.value ? `${link.label.fr} — ${link.value}` : link.label.fr}
+						data-title-en={link.value ? `${link.label.en} — ${link.value}` : link.label.en}
+						target={isExternal(link.href) ? '_blank' : undefined}
+						rel={isExternal(link.href) ? 'noopener noreferrer' : undefined}
+						data-aria-fr={link.label.fr}
+						data-aria-en={link.label.en}
+					>
+						{/* The icon is raw SVG markup stored in src/site.ts, so adding a
+						    new link never means editing this component. */}
+						<svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" set:html={link.icon} />
+						{/* Visible name under the icon: the two languages, one shown. */}
+						<span class="link-label">
+							<span lang="fr">{link.label.fr}</span>
+							<span lang="en">{link.label.en}</span>
+						</span>
+					</a>
+				)}
+			</li>
+		))
+	}
+</ul>
+
+<script>
+	// ----------------------------------------------------------------------
+	// The small "copy" buttons (only present when a link has kind 'text',
+	// i.e. when contact.emailAsText is true in src/site.ts).
+	//
+	// navigator.clipboard needs a secure context: it works on localhost and on
+	// any https site. If it is refused, the value is selected instead so a
+	// simple Ctrl+C does the job.
+	// ----------------------------------------------------------------------
+	document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+		btn.addEventListener('click', async () => {
+			const value = btn.getAttribute('data-copy') ?? '';
+
+			try {
+				await navigator.clipboard.writeText(value);
+			} catch {
+				// Fallback: select the text next to the button.
+				const range = document.createRange();
+				const label = btn.parentElement?.querySelector('.link-label');
+				if (label) {
+					range.selectNodeContents(label);
+					const selection = window.getSelection();
+					selection?.removeAllRanges();
+					selection?.addRange(range);
+				}
+			}
+
+			// Tick icon + "Copied!" for one second.
+			btn.classList.add('is-copied');
+			const previous = btn.getAttribute('title');
+			const lang = document.documentElement.dataset.lang ?? 'en';
+			btn.setAttribute('title', btn.getAttribute(`data-copied-${lang}`) ?? 'Copied!');
+			window.setTimeout(() => {
+				btn.classList.remove('is-copied');
+				if (previous !== null) btn.setAttribute('title', previous);
+			}, 1000);
+		});
+	});
+</script>
+
+<style>
+	/* The row: horizontal, centred, wraps on small screens. */
+	.links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.link {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		border: 1px solid #e2dcf0;
+		border-radius: 4px;
+		background: #fff;
+		color: #333;
+		text-decoration: none;
+		transition:
+			border-color 0.15s ease,
+			color 0.15s ease;
+	}
+
+	a.link:hover {
+		border-color: #7a49c5;
+		color: #7a49c5;
+	}
+
+	a.link:focus-visible {
+		outline: 2px solid #7a49c5;
+		outline-offset: 2px;
+	}
+
+	/* Two sizes, so the same component works in the intro and in the footer. */
+	.links--md .link {
+		padding: 9px 14px;
+	}
+	.links--md .icon {
+		width: 20px;
+		height: 20px;
+	}
+	.links--md .link-label {
+		font-size: 0.95rem;
+	}
+
+	.links--sm .link {
+		padding: 5px 10px;
+	}
+	.links--sm .icon {
+		width: 16px;
+		height: 16px;
+	}
+	.links--sm .link-label {
+		font-size: 0.85rem;
+	}
+
+	.icon {
+		flex: 0 0 auto;
+		/* Icons use currentColor, so they follow the text colour on hover. */
+		color: inherit;
+	}
+
+	.link-label {
+		white-space: nowrap;
+	}
+
+	/* --- The copy button (kind 'text' entries) --------------------------- */
+	.copy-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		margin-left: 2px;
+		padding: 0;
+		border: 1px solid #e2dcf0;
+		border-radius: 3px;
+		background: #f9f6fc;
+		color: #6b6478;
+		cursor: pointer;
+	}
+
+	.copy-btn:hover {
+		border-color: #7a49c5;
+		color: #7a49c5;
+	}
+
+	.copy-btn:focus-visible {
+		outline: 2px solid #7a49c5;
+		outline-offset: 2px;
+	}
+
+	.copy-btn svg {
+		width: 14px;
+		height: 14px;
+	}
+
+	/* The tick replaces the copy icon while .is-copied is on. */
+	.copy-btn .icon-tick {
+		display: none;
+	}
+	.copy-btn.is-copied {
+		color: #4a9d5f;
+		border-color: #bfe0c7;
+		background: #f2faf4;
+	}
+	.copy-btn.is-copied .icon-copy {
+		display: none;
+	}
+	.copy-btn.is-copied .icon-tick {
+		display: block;
+	}
+</style>

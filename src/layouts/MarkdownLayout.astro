@@ -1,0 +1,104 @@
+---
+// ==========================================================================
+// MarkdownLayout.astro — layout for the pages written in markdown.
+// --------------------------------------------------------------------------
+// A .md file cannot build its own HTML shell, so it declares a layout in its
+// frontmatter:
+//
+//     ---
+//     layout: ../layouts/MarkdownLayout.astro
+//     title: My CV
+//     ---
+//
+// What it does:
+//   1. wraps everything in BaseLayout (header, footer, FR/EN switch)
+//   2. wraps the markdown body in <div class="content"> so it gets the same
+//      width and typography as the other pages
+//   3. adds a "download the PDF" button when the frontmatter asks for it
+//      (`cv: true`), which is what src/pages/cv.md does. The PDF itself is
+//      also displayed inside the about page (src/pages/about.astro).
+//
+// Used by src/pages/cv.md. Project pages use their own template instead
+// (src/pages/projects/[id].astro) because they need the cover image, the tags
+// and the buttons around the markdown body.
+// ==========================================================================
+import BaseLayout from './BaseLayout.astro';
+import CvViewer from '../components/CvViewer.astro';
+import { cvPdf, cvPdfLabel } from '../site';
+
+// NOTE: Astro hands the frontmatter over inside `Astro.props.frontmatter`
+// (it does NOT spread the keys at the top level), so we read them from there.
+const frontmatter = (Astro.props.frontmatter ?? {}) as {
+	title?: string;
+	cv?: boolean;
+};
+const title = frontmatter.title;
+// `cv: true` in the frontmatter is what asks for the download button below.
+const cv = frontmatter.cv === true;
+
+// The button only appears on a page that asks for it AND when src/site.ts
+// points at a real file.
+const showPdfButton = cv && Boolean(cvPdf);
+---
+
+<BaseLayout title={title}>
+	<div class="content">
+		<!--
+		  The CV zone: the document itself (picture or reader, no border), then
+		  two quiet links under it. Only on the page that asks for it with
+		  `cv: true` in its frontmatter.
+		-->
+		{
+			showPdfButton && (
+				<section class="cv-zone">
+					<CvViewer />
+					<p class="cv-actions">
+						{/* Opens the PDF on its own, full size. */}
+						<a class="cv-link" href={cvPdf} target="_blank" rel="noopener noreferrer">
+							<span lang="fr">Ouvrir le PDF dans un nouvel onglet</span>
+							<span lang="en">Open the PDF in a new tab</span>
+						</a>
+						<span class="cv-sep" aria-hidden="true">·</span>
+						{/* `download` makes the browser save the file instead of
+						    opening it in a tab. */}
+						<a class="cv-link" href={cvPdf} download>
+							<span lang="fr">{cvPdfLabel.fr}</span>
+							<span lang="en">{cvPdfLabel.en}</span>
+						</a>
+					</p>
+				</section>
+			)
+		}
+
+		<!-- The body of the markdown file. -->
+		<slot />
+	</div>
+</BaseLayout>
+
+<style>
+	.cv-zone {
+		margin: 0 0 34px;
+	}
+
+	/* The two links under the document: quiet, purple, underlined on hover. */
+	.cv-actions {
+		margin: 12px 0 0;
+		text-align: center;
+		font-size: 0.95rem;
+	}
+
+	.cv-link {
+		color: #7a49c5;
+		text-decoration: none;
+		border-bottom: 1px solid #ddd0f2;
+	}
+
+	.cv-link:hover {
+		border-color: #7a49c5;
+	}
+
+	.cv-sep {
+		color: #c9b8e8;
+		margin: 0 8px;
+	}
+</style>

@@ -1,35 +1,124 @@
-<html lang="en">
+---
+// ==========================================================================
+// BaseLayout.astro — the shell of every page: <html>, header, footer.
+// --------------------------------------------------------------------------
+// What changed compared to the starter:
+//   - a `title` prop, so each page can have its own <title>
+//   - the language switcher (FR / EN) in the header
+//   - the menu is written in both languages (Home / Projects / About — the CV
+//     is not a menu button: it lives in the row of links, see src/site.ts)
+//   - SiteFooter.astro is included here, so the footer is on EVERY page
+//     (including the markdown ones) without writing it anywhere else
+//   - the <style is:global> block at the bottom holds the CSS rules that make
+//     the whole i18n system work
+//
+// Fonts and colours are untouched: still Poppins, still #7a49c5 / #f9f6fc.
+// ==========================================================================
+import LangSwitch from '../components/LangSwitch.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { siteName } from '../site';
+import { bilingualHtml } from '../i18n/index';
+
+interface Props {
+	/** Text of the browser tab. Defaults to your name. */
+	title?: string;
+	/** Or one title per language: the tab then follows the FR/EN switch. */
+	title_fr?: string;
+	title_en?: string;
+}
+
+const { title = siteName, title_fr, title_en } = Astro.props;
+
+// When both are given, they are written on <html> as data attributes and
+// src/i18n/i18n.js copies the right one into document.title. A page can also
+// pass a single `title` and ignore the languages.
+const hasBilingualTitle = Boolean(title_fr && title_en);
+---
+
+<!-- data-lang is the master switch of the whole i18n system. It starts at the
+     default language and is updated by the script in <head> below, then by
+     src/i18n/i18n.js when you click FR or EN. -->
+<html
+	lang="en"
+	data-lang="en"
+	data-title-fr={hasBilingualTitle ? title_fr : undefined}
+	data-title-en={hasBilingualTitle ? title_en : undefined}
+>
 	<head>
 		<meta charset="utf-8" />
+		<!-- public/favicon.svg. Delete this line if you would rather use a
+		     favicon.ico (put the file in public/ and change the href). -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Blanchard Theo</title>
+		<title>{hasBilingualTitle ? title_en : title}</title>
+
+		<!-- Runs before the page is painted, so the visitor never sees a flash
+		     of the wrong language. `is:inline` = Astro copies it as it is. -->
+		<script is:inline>
+			(function () {
+				var lang = 'en';
+				try {
+					var saved = localStorage.getItem('lang');
+					if (saved === 'fr' || saved === 'en') {
+						lang = saved;
+					} else if ((navigator.language || 'en').toLowerCase().indexOf('fr') === 0) {
+						lang = 'fr';
+					}
+				} catch (e) {
+					/* private browsing: keep the default */
+				}
+				var root = document.documentElement;
+				root.setAttribute('data-lang', lang);
+				root.setAttribute('lang', lang);
+				// Keep the browser tab in the chosen language too.
+				var t = root.getAttribute('data-title-' + lang);
+				if (t) document.title = t;
+			})();
+		</script>
 	</head>
 	<body>
-        <header>
-            <h1>Blanchard Theo</h1>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/projects">Projects</a></li>
-                </ul>
-            </nav>
-        </header>
-        <main>
-            <slot />
-        </main>
+		<header>
+			{/* Your name, as a plain title: not a link, not a button.
+			    (The "Home" entry of the menu already goes back to /.) */}
+			<h1>{siteName}</h1>
+			<nav>
+				<ul>
+					<!-- Each label exists in both languages; the CSS shows one. -->
+					<li><a href="/"><span set:html={bilingualHtml('nav.home')} /></a></li>
+					<li><a href="/about"><span set:html={bilingualHtml('nav.about')} /></a></li>
+					<li><a href="/projects"><span set:html={bilingualHtml('nav.projects')} /></a></li>
+				</ul>
+			</nav>
+			<LangSwitch />
+		</header>
+		<main>
+			<slot />
+		</main>
+		<SiteFooter />
+
+		<!-- The language logic (buttons, aria-labels, saved choice). Imported
+		     once here, so every page of the site gets it. -->
+		<script>
+			import '../i18n/i18n.js';
+		</script>
 	</body>
 </html>
 
 <style>
 	body {
 		margin: 0;
+		/* header at the top, content in the middle, footer at the bottom even
+		   on a short page */
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+	}
+	main {
+		flex: 1 0 auto;
 	}
 	header {
 		background-color: #f9f6fc;
@@ -37,18 +126,34 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		gap: 16px;
+		border-bottom: 1px solid #ece6f6;
 
 		h1 {
 			margin: 0;
+			font-size: 1.3em;
+			white-space: nowrap;
 		}
 		ul {
 			display: flex;
 			list-style-type: none;
 			gap: 16px;
+			margin: 0;
+			padding: 0;
 		}
 		a {
 			text-decoration: none;
 			border-bottom: 1px dashed;
+		}
+	}
+
+	/* Small screens: the name shrinks, the menu wraps under it. */
+	@media (max-width: 640px) {
+		header {
+			flex-wrap: wrap;
+		}
+		header h1 {
+			font-size: 1.1em;
 		}
 	}
 </style>
@@ -71,5 +176,81 @@
 		p {
 			font-size: 1.2em;
 		}
+	}
+
+	/* ======================================================================
+	   i18n — the three rules that make the whole system work.
+	   ----------------------------------------------------------------------
+	   Both languages are always in the HTML. The current language is written
+	   on <html> as data-lang, and these rules hide everything that is not in
+	   that language:
+	     - any element with lang="fr" / lang="en" (components, markdown blocks)
+	     - any element with the class "bilingual"
+	     - [hidden], used by the scripts to remove something from the page
+	   If data-lang is missing for any reason, English is shown (the default).
+	   ====================================================================== */
+	[data-lang='fr'] [lang='en']:not(html),
+	[data-lang='en'] [lang='fr']:not(html),
+	[data-lang='fr'] .bilingual[lang='en'],
+	[data-lang='en'] .bilingual[lang='fr'] {
+		display: none !important;
+	}
+	html:not([data-lang]) [lang='fr'] {
+		display: none !important;
+	}
+	[hidden] {
+		display: none !important;
+	}
+
+	/* The two spans of Bilingual.astro sit next to each other; only one is
+	   visible, so they must not add any spacing of their own. */
+	.bilingual {
+		display: inline;
+	}
+
+	/* Markdown bodies (project pages, CV) reuse the same typography as the
+	   rest of the site. */
+	.content img {
+		max-width: 100%;
+		height: auto;
+	}
+	.content pre {
+		background: #f6f3fb;
+		border: 1px solid #e6e0f2;
+		border-radius: 4px;
+		padding: 14px 16px;
+		overflow-x: auto;
+		font-size: 0.9rem;
+		line-height: 1.5;
+	}
+	.content code {
+		font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+		font-size: 0.9em;
+	}
+	.content p code {
+		background: #f6f3fb;
+		border: 1px solid #e6e0f2;
+		border-radius: 3px;
+		padding: 1px 5px;
+	}
+	.content blockquote {
+		margin: 1em 0;
+		padding: 2px 0 2px 16px;
+		border-left: 3px solid #d8cfe8;
+		color: #6b6478;
+	}
+	.content table {
+		border-collapse: collapse;
+		width: 100%;
+		font-size: 1rem;
+	}
+	.content th,
+	.content td {
+		border: 1px solid #e6e0f2;
+		padding: 8px 10px;
+		text-align: left;
+	}
+	.content th {
+		background: #f9f6fc;
 	}
 </style>

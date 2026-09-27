@@ -7,11 +7,13 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "postinstall": "astro sync",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.1",
     "astro": "^7.3.5"
   },
   "allowScripts": {

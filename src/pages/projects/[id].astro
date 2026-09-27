@@ -1,0 +1,242 @@
+---
+// ==========================================================================
+// projects/[id].astro — one page per project.
+// --------------------------------------------------------------------------
+// You never edit this file. The square brackets mean "dynamic route": Astro
+// asks getStaticPaths() for the list of pages to build, and generates one HTML
+// file per project found in src/projects/.
+//
+//   src/projects/voxel-engine.md  ->  /projects/voxel-engine
+//
+// So: drop a new .md file in src/projects/, and its card AND its page exist on
+// the next build. Nothing else to do.
+//
+// The page is made of:
+//   - a back link to the list
+//   - the cover image
+//   - the title, the summary and the tags (from the frontmatter, bilingual)
+//   - the repo / demo buttons (only if the frontmatter has them)
+//   - the body of the .md file, which is where you write freely
+// ==========================================================================
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Bilingual from '../../components/Bilingual.astro';
+import { tagLabel } from '../../i18n/index';
+
+export async function getStaticPaths() {
+	// Every project of the collection becomes one page.
+	const projects = await getCollection('projects');
+
+	return projects.map((project) => ({
+		// `params` fills the [id] part of the file name, and therefore the URL.
+		params: { id: project.id },
+		// `props` is handed to this page as Astro.props.
+		props: { project },
+	}));
+}
+
+const { project } = Astro.props;
+const { title_fr, title_en, summary_fr, summary_en, alt_fr, alt_en, image, tags, date, repo, demo } =
+	project.data;
+
+// Turns the markdown body into HTML. The result is a component you render with
+// <Content /> below. Language markers inside the body have already been turned
+// into <div lang="fr"> / <div lang="en"> by the rehype plugin.
+const { Content } = await render(project);
+
+// A readable date, one format per language.
+const dateFr = date?.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long' });
+const dateEn = date?.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+---
+
+<BaseLayout title_fr={`${title_fr} — Blanchard Theo`} title_en={`${title_en} — Blanchard Theo`}>
+	<div class="content project-page">
+		<a class="back" href="/projects"><Bilingual k="project.backToList" /></a>
+
+		<!-- Cover image -->
+		{
+			image && (
+				<p class="cover">
+					<img src={image.src} width={image.width} height={image.height} alt={alt_en || alt_fr || title_en} />
+				</p>
+			)
+		}
+
+		<!-- Title, date, summary, tags -->
+		<header class="project-head">
+			<h2 class="project-title">
+				<span lang="fr">{title_fr}</span>
+				<span lang="en">{title_en}</span>
+			</h2>
+
+			{
+				date && (
+					<p class="project-date">
+						<span lang="fr">{dateFr}</span>
+						<span lang="en">{dateEn}</span>
+					</p>
+				)
+			}
+
+			<p class="project-summary">
+				<span lang="fr">{summary_fr}</span>
+				<span lang="en">{summary_en}</span>
+			</p>
+
+			{
+				tags.length > 0 && (
+					<ul class="tags">
+						<li lang="fr" class="tags-row">
+							{tags.map((tag) => <span class="tag">{tagLabel(tag, 'fr')}</span>)}
+						</li>
+						<li lang="en" class="tags-row">
+							{tags.map((tag) => <span class="tag">{tagLabel(tag, 'en')}</span>)}
+						</li>
+					</ul>
+				)
+			}
+
+			<!-- Buttons, shown only when the frontmatter provides a URL -->
+			{
+				(repo || demo) && (
+					<p class="project-links">
+						{repo && (
+							<a class="button" href={repo} target="_blank" rel="noopener noreferrer">
+								<Bilingual k="project.repo" /> ↗
+							</a>
+						)}
+						{demo && (
+							<a class="button button-ghost" href={demo} target="_blank" rel="noopener noreferrer">
+								<Bilingual k="project.demo" /> ↗
+							</a>
+						)}
+					</p>
+				)
+			}
+		</header>
+
+		<!-- The body of the markdown file -->
+		<div class="project-body">
+			<Content />
+		</div>
+	</div>
+</BaseLayout>
+
+<style>
+	.project-page {
+		max-width: 820px;
+	}
+
+	.back {
+		display: inline-block;
+		font-size: 0.95rem;
+		color: #6b6478;
+		text-decoration: none;
+		border-bottom: 1px dashed #cfc5e2;
+	}
+
+	.back:hover {
+		color: #7a49c5;
+		border-bottom-color: #7a49c5;
+	}
+
+	.cover {
+		margin: 22px 0 0;
+	}
+
+	.cover img {
+		display: block;
+		width: 100%;
+		height: auto;
+		border: 1px solid #e6e0f2;
+		border-radius: 4px;
+	}
+
+	.project-head {
+		margin-top: 22px;
+		padding-bottom: 20px;
+		border-bottom: 1px solid #ece6f6;
+	}
+
+	.project-title {
+		margin: 0;
+		font-size: 2em;
+		font-weight: 500;
+		line-height: 1.2;
+	}
+
+	.project-date {
+		margin: 6px 0 0 !important;
+		font-size: 0.9rem !important;
+		color: #8a8398;
+		font-weight: 300;
+	}
+
+	.project-summary {
+		margin: 12px 0 0 !important;
+		font-size: 1.1em;
+		font-weight: 300;
+		color: #6b6478;
+	}
+
+	/* Tags: same square chips as on the cards. */
+	.tags {
+		list-style: none;
+		display: flex;
+		margin: 16px 0 0;
+		padding: 0;
+	}
+
+	.tags-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+
+	.tag {
+		display: inline-block;
+		padding: 3px 8px;
+		border: 1px solid #e0d8ef;
+		border-radius: 3px;
+		background: #f9f6fc;
+		color: #6b6478;
+		font-size: 0.8rem;
+	}
+
+	.project-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin: 20px 0 0 !important;
+	}
+
+	.button {
+		display: inline-block;
+		background-color: #7a49c5;
+		color: #fff;
+		padding: 6px 10px;
+		border-radius: 2px;
+		text-decoration: none;
+		font-size: 1rem;
+	}
+
+	.button:hover {
+		background-color: #965ee9;
+	}
+
+	.button-ghost {
+		background: #fff;
+		color: #7a49c5;
+		border: 1px solid #d8cfe8;
+	}
+
+	.button-ghost:hover {
+		background: #f9f6fc;
+		color: #965ee9;
+	}
+
+	/* The markdown body: the global .content rules give it its typography. */
+	.project-body {
+		margin-top: 10px;
+	}
+</style>
