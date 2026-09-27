@@ -1,17 +1,31 @@
 ---
-
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout>
+	<div class="content">
+		<h2>Welcome</h2>
+		<p>Little description</p>
+		<p>List of projects</p>		
+		<a href="/Books">Take a look at my projects</a>
+	</div>
+</BaseLayout>
+
+<style>
+	.content {
+		text-align: center;
+	}
+	a {
+		display: inline-block;
+		background-color: #7a49c5;
+		color: #fff;
+		padding: 6px 10px;
+		border-radius: 2px;
+		text-decoration: none;
+		margin-top: 20px;
+
+		&:hover {
+			background-color: #965ee9;
+		}
+	}
+</style>
