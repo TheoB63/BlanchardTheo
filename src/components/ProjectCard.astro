@@ -26,7 +26,19 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { title_fr, title_en, summary_fr, summary_en, alt_fr, alt_en, image, tags } = project.data;
+const { title_fr, title_en, summary_fr, summary_en, alt_fr, alt_en, image, tags, date} = project.data;
+
+const date_fr = date ? new Date(date).toLocaleDateString('fr-FR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}) : '';
+
+const date_en = date ? new Date(date).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}) : '';
 
 // project.id is the file name without ".md", so the URL follows the file.
 const url = `/projects/${project.id}`;
@@ -58,7 +70,10 @@ const alt = alt_en || alt_fr || title_en;
 				<span lang="fr">{title_fr}</span>
 				<span lang="en">{title_en}</span>
 			</h3>
-
+			<!-- <p class="card-date"> -->
+				<span lang="fr">{date_fr}</span>
+    			<span lang="en">{date_en}</span>
+			<!-- </p> -->
 			<p class="card-summary">
 				<span lang="fr">{summary_fr}</span>
 				<span lang="en">{summary_en}</span>
