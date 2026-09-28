@@ -72,6 +72,11 @@ jobs:
             --site "${{ steps.pages.outputs.origin }}" \
             --base "${{ steps.pages.outputs.base_path }}"
         working-directory: ${{ env.BUILD_PATH }}
+      - name: Fix internal links for GitHub Pages base path
+        run: |
+          BASE="${{ steps.pages.outputs.base_path }}"
+          find dist -name '*.html' -exec perl -pi -e "s{(href|src)=\"/(?!/)(?!\Q${BASE#/}\E/)(?!\Q${BASE#/}\E\")}{\$1=\"${BASE}/}g" {} +
+        working-directory: ${{ env.BUILD_PATH }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
