@@ -1,0 +1,249 @@
+---
+// ==========================================================================
+// AboutSection.astro — the BODY of the "About" section of the one-page site.
+// --------------------------------------------------------------------------
+// This file is the old src/pages/about.astro, unchanged in FORMAT: the same
+// blocks, in the same order, left-aligned, with the same markup and the same
+// spacing as before. Only the colours now come from src/theme.ts.
+//
+// The blocks, from top to bottom:
+//   1. who I am        the paragraphs, in both languages
+//   2. my studies      a <ul>, one <li> per line
+//   3. what I work with  a <dl> (definition list)
+//   4. my links        LinkBar.astro + the two coordinates written in full
+//
+// The TITLE above all this ("Qui je suis" / "01 — About") is not here: it is in
+// src/site.ts, in `sections.about`, and it is drawn by Section.astro.
+//
+// There is NO separate "see my CV" button here (there used to be one, it was a
+// duplicate): the CV is already one of the buttons of LinkBar.astro, which is
+// built in src/site.ts and appears here, in the hero and in the footer.
+//
+// WRITING A BILINGUAL PARAGRAPH — two ways, both used below, pick your
+// favourite:
+//   A. one element per language, with the attribute lang="fr" / lang="en"
+//        <p lang="fr">Bonjour</p>
+//        <p lang="en">Hello</p>
+//   B. the <Bilingual> component, for short texts that are reused elsewhere
+//        <h3><Bilingual k="about.studies" /></h3>
+// The CSS that hides the language you are not reading is in BaseLayout.astro.
+//
+// Everything about you (name, links, email, phone) comes from src/site.ts.
+// ==========================================================================
+import LinkBar from './LinkBar.astro';
+import Bilingual from './Bilingual.astro';
+import { contact, phoneDisplay } from '../site';
+---
+
+<div class="about">
+	<!-- ==================================================================
+	     1. WHO I AM
+	     Write as many paragraphs as you need, in both languages.
+	     ================================================================== -->
+	<section class="block">
+		<p lang="fr">
+			Je m’appelle Théo Blanchard. Je suis etudiants en 4ème et dernière année à Créajeux, dans le
+			développement de jeux vidéo. Je travaille principalement en C++ et en C#, sur Unity, Unreal et
+			mon moteur Equinox (trouvable dans mes projets).
+		</p>
+		<p lang="fr">
+			Je suis passionné par la programmation bas niveau et la conception de moteurs. Jusqu'à présent
+			dans mes projets j'ai principalement fait de la programmation gameplay.
+		</p>
+		<p lang="fr">
+			Vous retrouverais sur les pages des différents projets plus en détail sur quoi j'ai travaillé sur
+			chaque projets et qu'elles ont était les difficulté rencontré.
+		</p>
+
+		<p lang="en">
+			My name is Théo Blanchard. I am a fourth-year student, my final year at Créajeux, studying video
+			game development. I work mainly in C++ and C#, using Unity, Unreal and my own engine, Equinox
+			(which can be found in my projects).
+		</p>
+		<p lang="en">
+			I’m passionate about low-level programming and engine design. So far, in my projects, I’ve mainly
+			been involved in gameplay programming.
+		</p>
+		<p lang="en">
+			You’ll find more details on the pages for the various projects about what I worked on for each one
+			and what difficulties I encountered.
+		</p>
+	</section>
+
+	<!-- ==================================================================
+	     2. MY STUDIES — one <li> per line; delete or copy freely.
+	     ================================================================== -->
+	<section class="block">
+		<h3><Bilingual k="about.studies" /></h3>
+
+		<ul lang="fr">
+			<li>
+				<p style="margin: 0;">2022-2027 : Creajeux - Programmeur Jeux Vidéo</p>
+				<a style="display: block; margin-top: 2px;">Creajeux, l'école des Métiers du jeu vidéo - Nîmes</a>
+			</li>
+			<li>
+				<p style="margin: 0;">2020-2022 : BTS Moteur à combustion interne (MCI)</p>
+				<a style="display: block; margin-top: 2px;">Lycée Isaac de l'étoile - Poitiers</a>
+			</li>
+			<li>
+				<p style="margin: 0;">2017-2020 : Bac Sciences et Technologies de l’Agronomie et du Vivant (STAV)</p>
+				<a style="display: block; margin-top: 2px;">Lycée Louis Pasteur Marmilhat - Lempdes</a>
+			</li>
+		</ul>
+
+		<ul lang="en">
+			<li>
+				<p style="margin: 0;">2022-2027: Creajeux - Video Game Programmer</p>
+				<a style="display: block; margin-top: 2px;">Creajeux, School of Video Game Careers - Nîmes</a>
+			</li>
+			<li>
+				<p style="margin: 0;">2020-2022: BTS Internal Combustion Engines (MCI)</p>
+				<a style="display: block; margin-top: 2px;">Lycée Isaac de l'étoile - Poitiers</a>
+			</li>
+			<li>
+				<p style="margin: 0;">2017-2020: Technological High School Diploma in Agricultural and Life Sciences (Bac STAV)</p>
+				<a style="display: block; margin-top: 2px;">Lycée Louis Pasteur Marmilhat - Lempdes</a>
+			</li>
+		</ul>
+	</section>
+
+	<!-- ==================================================================
+	     3. WHAT I WORK WITH — a definition list reads well in both languages.
+	     ================================================================== -->
+	<section class="block">
+		<h3><Bilingual k="about.skills" /></h3>
+
+		<dl lang="fr">
+			<dt>Langages</dt>
+			<dd>C++ (17/20), C#, C, Lua</dd>
+			<dt>Moteurs</dt>
+			<dd>Unity , Unreal , moteurs maison</dd>
+			<dt>Autour du code</dt>
+			<dd>Premake, GitHub</dd>
+		</dl>
+
+		<dl lang="en">
+			<dt>Languages</dt>
+			<dd>C++ (17/20), C#, C, Lua</dd>
+			<dt>Engines</dt>
+			<dd>Unity , Unreal , in-house engines</dd>
+			<dt>Around the code</dt>
+			<dd>Premake, GitHub</dd>
+		</dl>
+	</section>
+
+	<!-- ==================================================================
+	     4. MY LINKS
+	     LinkBar is the same reusable component as in the hero and in the
+	     footer; the list is built in src/site.ts from the `contact` block.
+	     The CV link is part of it — no need to add a button of its own.
+	     ================================================================== -->
+	<section class="block">
+		<h3><Bilingual k="about.links" /></h3>
+		<LinkBar size="md" />
+
+		<!-- The two coordinates worth reading in full, spelled out.
+		     Each line disappears on its own when the field is empty in
+		     src/site.ts. -->
+		{
+			contact.email && (
+				<p class="coordinate">
+					<span class="coordinate-label">Email</span>
+					<a href={`mailto:${contact.email}`}>{contact.email}</a>
+				</p>
+			)
+		}
+		{
+			phoneDisplay && (
+				<p class="coordinate">
+					<span class="coordinate-label">
+						<Bilingual k="about.phone" />
+					</span>
+					<a href={`tel:${contact.phone}`}>{phoneDisplay}</a>
+				</p>
+			)
+		}
+	</section>
+</div>
+
+<style>
+	/* ==================================================================
+	   The spacing and the sizes are the ones of the old about page:
+	   one .block after another, each one 34px below the previous.
+	   ================================================================== */
+	.block + .block {
+		margin-top: 34px;
+	}
+
+	.block h3 {
+		margin: 0 0 10px;
+		font-size: 1.25em;
+		font-weight: 500;
+	}
+
+	/* The old page put every <p> of .content at 1.2em: same here, so the
+	   prose keeps its size. */
+	.about p {
+		font-size: 1.2em;
+	}
+
+	/* --- The studies list ------------------------------------------------- */
+	.about ul {
+		margin: 0;
+		padding-left: 22px;
+	}
+
+	.about li {
+		margin-bottom: 4px;
+	}
+
+	/* --- The skills list --------------------------------------------------- */
+	.about dl {
+		margin: 0;
+		display: grid;
+		grid-template-columns: max-content 1fr;
+		gap: 6px 20px;
+	}
+
+	.about dt {
+		font-weight: 500;
+		color: var(--c-text-muted);
+	}
+
+	.about dd {
+		margin: 0;
+	}
+
+	/* --- The two coordinates under the links ------------------------------- */
+	.coordinate {
+		margin: 12px 0 0;
+		font-size: 0.95rem !important;
+	}
+
+	.coordinate-label {
+		color: var(--c-text-soft);
+		margin-right: 8px;
+	}
+
+	.coordinate a {
+		color: var(--c-text);
+		text-decoration: none;
+		border-bottom: 1px solid var(--c-border-strong);
+	}
+
+	.coordinate a:hover {
+		color: var(--c-primary);
+		border-color: var(--c-primary);
+	}
+
+	/* --- Small screens: the definition list stacks instead of overflowing --- */
+	@media (max-width: 640px) {
+		.about dl {
+			grid-template-columns: 1fr;
+			gap: 2px;
+		}
+		.about dt {
+			margin-top: 10px;
+		}
+	}
+</style>

@@ -1,41 +1,209 @@
 // ==========================================================================
-// site.ts — personal information, in one place.
+// site.ts — YOUR content, in one place.
+// --------------------------------------------------------------------------
+// Two files rule the site, and only two:
+//
+//   src/theme.ts   the skin: colours, sizes, spacing        (how it LOOKS)
+//   src/site.ts    your content: name, hero, menu, sections, links
+//                                                          (what it SAYS)
+//
+// This file is read at BUILD time by the components, so every change here
+// applies to the whole site (one-page home, project pages, CV page, footer).
 // ==========================================================================
 
-//Name shown in the header, in the intro of the home page and in the footer. */
+// ==========================================================================
+// 1. WHO YOU ARE
+// ==========================================================================
+
+/** Name shown in the hero, in the header and in the footer. */
 export const siteName = 'Blanchard Theo';
 
-// ---------------------------------------------------------------------------
-// The image zone of the home page.
-//
-//   1. put your file in src/assets/  (any name, any folder you like)
-//   2. uncomment the import line below and point it at your file
-//   3. replace `null` by the imported name
-//
-// While it is `null`, the home page shows a dashed box that says what to do,
-// so nothing is ever broken.
-// ---------------------------------------------------------------------------
-import introPhoto from './assets/Intro.png';
-export const introImage = introPhoto;
-
-/** Text inside that dashed box. Change it freely. */
-export const introImageHint = {
-	fr: 'Ajoutez une image dans src/assets/ puis renseignez introImage dans src/site.ts',
-	en: 'Drop an image in src/assets/ then set introImage in src/site.ts',
-};
-
-/** The short line under your name. One version per language. */
-export const introSubtitle = {
+/** The short line under your name in the hero. One version per language. */
+export const heroSubtitle = {
 	fr: 'Développeur Moteur et Gameplay ',
 	en: 'Engine and Gameplay developer',
 };
 
 // ==========================================================================
-// 1. MY CONTACT DETAILS  <- the only block you really have to fill in
+// 2. THE HERO — the first screen of the one-page site
+// --------------------------------------------------------------------------
+// The hero shows a BACKGROUND that cycles through your pictures, GIFs and
+// videos, and, on top of it: your name, your subtitle, two buttons and your
+// coordinates (GitHub, LinkedIn, mail, phone, CV — built from `contact` below).
+//
+// WHERE THE FILES GO
+//   a) simple: drop them in  public/hero/  and write their address in the list
+//      below, starting with a slash:
+//          public/hero/shot.jpg      ->  '/hero/shot.jpg'
+//          public/hero/capture.mp4   ->  '/hero/capture.mp4'
+//          public/hero/anim.gif      ->  '/hero/anim.gif'
+//      Anything in public/ is copied to the site as it is: no size limit, and
+//      videos and GIFs keep their animation.
+//   b) or, for a picture you want Astro to optimise (resize + WebP), put it in
+//      src/assets/, import it at the top of this file and use the imported
+//      name in the list. `introImage` below is exactly that.
+//
+// The kind of each slide (image or video) is detected from the file extension:
+// .mp4 .webm .ogv .mov = video, everything else = image.
+// ==========================================================================
+// --------------------------------------------------------------------------
+// A picture you drop in src/assets/ is found AUTOMATICALLY: no import to write,
+// and nothing breaks while the folder is empty. The line below looks for
+// src/assets/Intro.png (also .jpg, .jpeg, .webp), keeps the first one it finds
+// and gives `null` when there is none. `import.meta.glob` is a Vite feature:
+// it is resolved at build time, which is why the picture can still be
+// optimised by Astro.
+// --------------------------------------------------------------------------
+const introPictures = import.meta.glob('./assets/Intro.{png,jpg,jpeg,webp,avif}', {
+	eager: true,
+	import: 'default',
+}) as Record<string, { src: string; width?: number; height?: number }>;
+
+/** The first picture found in src/assets/, or `null` if there is none yet. */
+export const introImage = Object.values(introPictures)[0] ?? null;
+
+export const hero = {
+	/**
+	 * The list of slides, in order. Add as many as you want.
+	 * Empty list (`[]`) = no background picture: the hero shows a purple
+	 * gradient instead (see `colors.heroFallback` in src/theme.ts).
+	 *
+	 * THE THREE '/hero/demo-*.jpg' BELOW ARE DEMONSTRATION PICTURES that came
+	 * with this version of the site. Delete these three lines and the three
+	 * files in public/hero/ as soon as you have your own screenshots — this
+	 * block is the only place you have to list them.
+	 */
+	slides: [
+		'/hero/demo-1.jpg', // a file from public/hero/
+		'/hero/demo-2.jpg',
+		'/hero/demo-3.jpg',
+		'/hero/demo-4.mp4',
+		'/hero/demo-5.gif',
+
+		// Your own pictures: put the file in public/hero/ and write its address.
+		// '/hero/screenshot.jpg',
+		// '/hero/title-screen.png',
+		// '/hero/anim.gif',        // an animated GIF works like a picture
+
+		// A video: same thing, the extension is enough (.mp4 .webm .ogv .mov).
+		// It is muted and looped, and only the visible one plays.
+		// '/hero/gameplay.mp4',
+
+		// A picture imported from src/assets/ (see `introImage` above) also
+		// works: uncomment the next line.
+		// introPhoto,
+	] as (string | { src: string } | null | undefined)[], // `as ...` helps TypeScript
+
+	/** How long each slide stays on screen, in milliseconds. 1000 = 1 second. */
+	intervalMs: 6000,
+
+	/**
+	 * Length of the fade between two slides, in milliseconds. Keep it smaller
+	 * than `intervalMs` or you will never see a picture fully.
+	 */
+	transitionMs: 1400,
+
+	/** Show the small dots under the coordinates (one per slide)? */
+	dots: true,
+
+	/** Show the little arrow at the bottom that scrolls to "About"? */
+	scrollCue: true,
+
+	/**
+	 * The two buttons in the middle of the hero. `href` can be:
+	 *   '#projects'            an anchor of the one-page site (smooth scroll)
+	 *   '/cv'                  an internal page
+	 *   'mailto:you@mail.com'  an e-mail, 'tel:+33...' a phone number, or any
+	 *                          https:// address
+	 * Delete a line to remove the button, or leave `buttons: []` for none.
+	 * `style: 'solid'` = filled, `'ghost'` = just an outline.
+	 */
+	buttons: [
+		{
+			href: '#projects',
+			style: 'solid',
+			label: { fr: 'Voir mes projets', en: 'See my projects' },
+		},
+		{
+			href: 'mailto:theo.blanchard63@gmail.com',
+			style: 'ghost',
+			label: { fr: 'Me contacter', en: 'Contact me' },
+		},
+	],
+};
+
+// ==========================================================================
+// 3. THE MENU — the buttons of the header
+// --------------------------------------------------------------------------
+// `anchor` is the `id` of a section of the one-page home (see `sections`
+// below). The header turns it into '/#about', so the same button works from
+// every page: it always brings the visitor back to the home page, at the right
+// section. Adding a fourth section later = adding a section with that id +
+// one line here.
+// ==========================================================================
+export const menu = [
+	{ id: 'home', anchor: '#home', label: { fr: 'Accueil', en: 'Home' } },
+	{ id: 'projects', anchor: '#projects', label: { fr: 'Projets', en: 'Projects' } },
+	{ id: 'about', anchor: '#about', label: { fr: 'À propos', en: 'About' } },
+];
+
+// ==========================================================================
+// 4. THE SECTIONS — the titles of the one-page home
+// --------------------------------------------------------------------------
+// Each block writes three texts, in both languages:
+//   eyebrow  the small line above the title (a number, a category...)
+//   title    the big title of the section
+//   lead     one sentence under the title (optional: '' = nothing)
+//
+// `id` MUST stay the same as the `anchor` used in `menu` above.
+//
+// The BODY of the about section (the paragraphs, the studies, the skills) is
+// written in src/components/AboutSection.astro, because it is prose, not a
+// setting. The projects section reads src/projects/*.md, like before.
+// ==========================================================================
+export const sections = {
+	projects: {
+		id: 'projects',
+		eyebrow: { fr: '01 — Projets', en: '01 — Projects' },
+		title: { fr: 'Mes projets', en: 'My projects' },
+		lead: {
+			fr: 'Du plus récent au plus ancien.',
+			en: 'Newest first.',
+		},
+		/**
+		 * How the projects are shown in that section:
+		 *   'rail' the horizontal, draggable row of the old home page, with
+		 *          the two arrows under it (ProjectRail.astro) — the default
+		 *   'grid' all the projects in a grid, one under the other
+		 * One word, and the section changes. Both use the same cards.
+		 */
+		layout: 'rail' as 'grid' | 'rail',
+
+		/**
+		 * Show the small line under the rail ("drag the cards, or use the
+		 * arrows")? The text is in src/i18n/translations/home.ts.
+		 * Only useful in 'rail' mode: the grid has nothing to explain.
+		 */
+		hint: true,
+	},
+	about: {
+		id: 'about',
+		eyebrow: { fr: '02 — À propos', en: '02 — About' },
+		title: { fr: 'Qui je suis', en: 'Who I am' },
+		lead: {
+			fr: 'Étudiant en dernière année à Créajeux, programmeur gameplay et moteur.',
+			en: 'Final-year student at Créajeux, gameplay and engine programmer.',
+		},
+	},
+	
+};
+
+// ==========================================================================
+// 5. MY CONTACT DETAILS  <- the only block you really have to fill in
 // --------------------------------------------------------------------------
 // Write the VALUE, not the whole address: the links below are built from it
-// automatically, and they appear everywhere at once (intro of the home page,
-// about page, footer).
+// automatically, and they appear everywhere at once (hero of the home page,
+// about section, footer).
 //
 // Leave a field empty ('' or null) and its button simply does not appear.
 // ==========================================================================
@@ -65,11 +233,11 @@ export const contact = {
 };
 
 // ==========================================================================
-// 2. MY CV
+// 6. MY CV
 // --------------------------------------------------------------------------
 // The CV page (/cv) shows the text written in src/pages/cv.md, a download
-// button, and the PDF displayed inside the page. The about page shows the
-// same PDF.
+// button, and the PDF displayed inside the page. It is still a page of its own:
+// it is reachable from the "Mon CV" link of the hero / about section / footer.
 //
 //   1. export your CV as a PDF
 //   2. put it in the public/ folder, for example public/cv.pdf
@@ -89,9 +257,6 @@ export const cvPdfLabel = {
 // --------------------------------------------------------------------------
 // HOW THE CV IS DISPLAYED on its own page (/cv).
 //
-// Everything about the CV lives on /cv now: the about page only has the row
-// of links, and the "Mon CV" link points here.
-//
 //   'image' mode (the default) shows a plain PICTURE of your CV: no border,
 //   no toolbar, no scrollbar — nothing betrays a reader. The frame is exactly
 //   as tall as the picture needs to be (its real proportions are read at
@@ -99,7 +264,6 @@ export const cvPdfLabel = {
 //
 //       -> drop a picture of your CV in src/assets/, named cv.png / cv.jpg /
 //          cv.webp (page 1 of the PDF exported as an image is perfect).
-//          It is found automatically, exactly like the intro image.
 //
 //   'reader' mode shows the PDF itself in the browser's built-in reader, with
 //   the toolbar, the panel and the scrollbar turned off and no border. It is
@@ -108,8 +272,15 @@ export const cvPdfLabel = {
 //
 // Both modes keep the real PDF (public/cv.pdf) for the download link.
 // --------------------------------------------------------------------------
-import cvPicture from './assets/cv.png';
-export const cvImage = cvPicture;
+// Found automatically, exactly like introImage above: drop src/assets/cv.png
+// (or .jpg / .jpeg / .webp) and it is used. While there is no picture, this
+// stays `null` and CvViewer.astro quietly falls back to 'reader' mode.
+const cvPictures = import.meta.glob('./assets/cv.{png,jpg,jpeg,webp,avif}', {
+	eager: true,
+	import: 'default',
+}) as Record<string, { src: string; width?: number; height?: number }>;
+
+export const cvImage = Object.values(cvPictures)[0] ?? null;
 
 // 'image' -> the picture above, plain, no border, no toolbar.
 // 'reader' -> the PDF in the browser's reader, chrome turned off.
@@ -123,7 +294,7 @@ export const cvDisplay: 'image' | 'reader' = 'reader';
 export const cvReaderRatio = 141.4;
 
 // ==========================================================================
-// 3. HOW THE LINKS ARE BUILT  (nothing to edit to get started)
+// 7. HOW THE LINKS ARE BUILT  (nothing to edit to get started)
 // --------------------------------------------------------------------------
 // `links` is the list rendered by LinkBar.astro. It is generated from
 // `contact` above, in this order: GitHub, LinkedIn, email, phone, CV.
@@ -248,5 +419,5 @@ export const extraLinks: SiteLink[] = [
 /** The final list, used by LinkBar.astro. Order = order of the buttons. */
 export const links: SiteLink[] = [...generated, ...extraLinks];
 
-/** The phone number as it should be displayed (only used by the about page). */
+/** The phone number as it should be displayed (about section). */
 export const phoneDisplay = has(contact.phone) ? prettyPhone(contact.phone) : null;

@@ -42,8 +42,13 @@ const useImage = cvDisplay === 'image' && Boolean(cvImage);
 {useImage ? (
     <img class="cv-page cv-page--image" src={cvImage.src} alt="CV" />
 ) : (
+    /* In 'reader' mode the frame needs an imposed height, otherwise the
+       browser's PDF reader grows without end. That height is `cvReaderRatio`
+       (in src/site.ts): height = ratio% of the width, so 141.4% for an A4 page
+       standing up. It is passed to the CSS as a variable. */
     <iframe
         class="cv-page cv-page--reader"
+        style={`--cv-ratio: ${cvReaderRatio}`}
         src={`${cvPdf}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
         title="CV (PDF)"
     />
@@ -61,7 +66,7 @@ const useImage = cvDisplay === 'image' && Boolean(cvImage);
 	.cv-frame {
 		position: relative;
 		width: 100%;
-		max-width: 820px;
+		max-width: var(--w-column);
 		margin: 0 auto;
 		border: 0;
 		background: transparent;
@@ -91,7 +96,7 @@ const useImage = cvDisplay === 'image' && Boolean(cvImage);
 
 	/* The reader must not show its own edges. */
 	.cv-frame iframe {
-		background: #fff;
+		background: var(--c-surface);
 		overflow: hidden;
 	}
 
@@ -113,7 +118,7 @@ const useImage = cvDisplay === 'image' && Boolean(cvImage);
     .cv-page {
 		display: block;
 		width: 100%;
-		max-width: 820px;
+		max-width: var(--w-column);
 		margin: 0 auto;
 		border: 0;
 		background: transparent;
@@ -124,12 +129,12 @@ const useImage = cvDisplay === 'image' && Boolean(cvImage);
 		height: auto;
 	}
 
-	/* Le lecteur, lui, a besoin d'une hauteur imposée : une page A4 debout.
-	   Change les deux nombres si ton papier n'est pas un A4
-	   (Letter US : 216 / 279). */
+	/* The reader needs an imposed height: `100 / cvReaderRatio` is the
+	   width/height ratio of the document (141.4 -> an A4 page standing up,
+	   129.4 -> a US Letter page). Change `cvReaderRatio` in src/site.ts. */
 	.cv-page--reader {
-		aspect-ratio: 210 / 297;
-		background: #fff;
+		aspect-ratio: 100 / var(--cv-ratio, 141.4);
+		background: var(--c-surface);
 		overflow: hidden;
 	}
 

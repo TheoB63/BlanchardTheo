@@ -1,115 +1,69 @@
 ---
 // ==========================================================================
-// index.astro — the home page  (URL: /)
+// index.astro — THE ONE PAGE of the site.  (URL: /)
 // --------------------------------------------------------------------------
-// Two zones, as requested:
-//   1. Intro.astro        -> image zone, name, subtitle, row of logo links
-//   2. ProjectRail.astro -> the horizontal list of projects, with the arrows
-//                           below it and drag-to-scroll
+// One page, three sections, one after the other:
 //
-// The projects come from src/project-list.ts (which reads the collection
-// defined in src/content.config.ts), so this file never changes when you add a
-// project. Every build prints in the terminal how many were found.
+//   1. <Hero />            the first screen: your pictures/videos in the
+//                          background, your name and your coordinates on top.
+//                          It is not a <Section>: it is deliberately
+//                          full-screen, with no title block.
+//   2. <Section #about>    "Qui je suis": prose, studies, skills, links.
+//   3. <Section #projects> every project, in a grid (or the draggable rail).
+//
+// The menu buttons of the header (Home / About / Projects) point at #home,
+// #about and #projects, so they scroll to the right section of THIS page.
+// Their labels and their targets are in src/site.ts (`menu`), the titles of the
+// sections are in src/site.ts too (`sections`).
+//
+// Everything else kept its own page, because a one-page site cannot hold it:
+//   /projects/<name>  one page per project (built from src/projects/*.md)
+//   /cv               the CV (src/pages/cv.md)
+//   /about and /projects now redirect to the matching section (astro.config.mjs)
 // ==========================================================================
-import { listProjects } from '../project-list';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Intro from '../components/Intro.astro';
-import ProjectRail from '../components/ProjectRail.astro';
-import Bilingual from '../components/Bilingual.astro';
-import EmptyProjects from '../components/EmptyProjects.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import AboutSection from '../components/AboutSection.astro';
+import ProjectsSection from '../components/ProjectsSection.astro';
+import { listProjects } from '../project-list';
+import { sections, siteName } from '../site';
 
-// Already sorted, newest first.
+// Already sorted, newest first. The terminal prints what was found every time.
 const projects = await listProjects();
 ---
 
-<BaseLayout>
-	<div class="content">
-		<!-- 1. Name, image zone and links -->
-		<Intro />
+<BaseLayout
+	title_fr={`${siteName} — Développeur moteur et gameplay`}
+	title_en={`${siteName} — Engine and gameplay developer`}
+>
+	<!-- 1. THE HERO ------------------------------------------------------- -->
+	<Hero />
 
-		<!-- 2. The projects -->
-		<section class="projects-section">
-			<div class="section-head">
-				<h2><Bilingual k="home.projectsTitle" /></h2>
-			</div>
+	<!-- 2. PROJECTS ------------------------------------------------------- -->
+	<Section
+		id={sections.projects.id}
+		eyebrow={sections.projects.eyebrow}
+		title={sections.projects.title}
+		lead={sections.projects.lead}
+		tone="tint"
+	>
+		<ProjectsSection
+			projects={projects}
+			layout={sections.projects.layout}
+			hint={sections.projects.hint}
+		/>
+	</Section>
 
-			<!--
-			  EmptyProjects appears only when src/projects/ has no usable .md
-			  file. It explains on the page what to check, which is faster than
-			  hunting for a silent build error.
-			-->
-			{
-				projects.length > 0 ? (
-					<ProjectRail projects={projects} />
-				) : (
-					<EmptyProjects />
-				)
-			}
-
-			<p class="all-projects">
-				<a href="/projects" class="button"><Bilingual k="home.allProjects" /></a>
-			</p>
-		</section>
-	</div>
+	<!-- 3. ABOUT ----------------------------------------------------------
+	     `tone="plain"`: white background. The next section is tinted, which is
+	     what draws the line between them (see Section.astro). -->
+	<Section
+		id={sections.about.id}
+		eyebrow={sections.about.eyebrow}
+		title={sections.about.title}
+		lead={sections.about.lead}
+	>
+		<AboutSection />
+	</Section>
 </BaseLayout>
-
-<style>
-	/* The intro is centred, the project section is left-aligned: the two zones
-	   read differently on purpose. */
-	.content {
-		text-align: center;
-	}
-
-	.projects-section {
-		text-align: left;
-		margin-top: 50px;
-	}
-
-	.section-head {
-		margin-bottom: 18px;
-	}
-
-	.section-head h2 {
-		margin: 0;
-	}
-
-	.hint {
-		margin: 4px 0 0 !important;
-		font-size: 0.95rem !important;
-		font-weight: 300;
-		color: #8a8398;
-	}
-
-	.all-projects {
-		margin-top: 24px;
-		text-align: center;
-	}
-
-	/* Same button as the starter kit had, so the look stays consistent. */
-	.button {
-		display: inline-block;
-		background-color: #7a49c5;
-		color: #fff;
-		padding: 6px 10px;
-		border-radius: 2px;
-		text-decoration: none;
-		font-size: 1rem;
-	}
-
-	.button:hover {
-		background-color: #965ee9;
-	}
-</style>
-
-<!--
-  Unscoped on purpose: .rail-block is rendered by ProjectRail.astro, so a
-  scoped selector from this page can never match it (see the note in
-  ProjectRail.astro). The selector is prefixed with .projects-section, which
-  only exists on this page, so it stays local in practice.
--->
-<style is:global>
-	/* The rail must be able to scroll sideways even inside a centred block. */
-	.projects-section .rail-block {
-		width: 100%;
-	}
-</style>

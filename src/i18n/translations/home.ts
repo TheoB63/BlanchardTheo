@@ -1,17 +1,25 @@
 // ==========================================================================
-// home.ts — texts of the home page (src/pages/index.astro).
+// home.ts — the texts of the ONE-PAGE home that are not in src/site.ts.
+// --------------------------------------------------------------------------
+// The titles of the sections ("Qui je suis", "Mes projets"), their small line
+// above and their lead sentence are in src/site.ts (`sections`), together with
+// the hero and the menu: everything you are likely to reword lives there.
+// Only the little interface texts stay here.
 // ==========================================================================
 export const fr = {
-	'home.projectsTitle': 'Mes projets',
-	'home.allProjects': 'Voir tous les projets',
+	// Shown under the projects when `sections.projects.layout` is 'rail' in
+	// src/site.ts (the horizontal, draggable row).
+	'home.projectsHint': 'Faites glisser les cartes, ou utilisez les flèches.',
 
-	// Shown only when src/projects/ contains no usable .md file.
-	'home.noProjects': 'Aucun projet détecté dans src/projects/.',
+	// ---- The hero (aria-labels only: they cannot be written twice, so the
+	// small script src/i18n/i18n.js swaps them when you click FR / EN) -------
+	'hero.slideGroup': 'Images d’arrière-plan',
+	'hero.scrollDown': 'Aller à la section suivante',
 };
 
 export const en: typeof fr = {
-	'home.projectsTitle': 'My projects',
-	'home.allProjects': 'See all projects',
+	'home.projectsHint': 'Drag the cards, or use the arrows.',
 
-	'home.noProjects': 'No project found in src/projects/.',
+	'hero.slideGroup': 'Background slides',
+	'hero.scrollDown': 'Go to the next section',
 };

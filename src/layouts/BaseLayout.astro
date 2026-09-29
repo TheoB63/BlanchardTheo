@@ -2,22 +2,27 @@
 // ==========================================================================
 // BaseLayout.astro — the shell of every page: <html>, header, footer.
 // --------------------------------------------------------------------------
-// What changed compared to the starter:
-//   - a `title` prop, so each page can have its own <title>
-//   - the language switcher (FR / EN) in the header
-//   - the menu is written in both languages (Home / Projects / About — the CV
-//     is not a menu button: it lives in the row of links, see src/site.ts)
-//   - SiteFooter.astro is included here, so the footer is on EVERY page
-//     (including the markdown ones) without writing it anywhere else
-//   - the <style is:global> block at the bottom holds the CSS rules that make
-//     the whole i18n system work
+// WHAT IS IN HERE
+//   1. the theme: this is where the colours and sizes of src/theme.ts are
+//      turned into CSS variables, once and for all (see `themeCss` below).
+//      That is why no component ever writes a colour by hand.
+//   2. the sticky header: your name on the left, the menu in the middle, the
+//      FR / EN switch on the right. The menu is built from `menu` in
+//      src/site.ts and each button scrolls to a section of the one-page home
+//      (#home / #about / #projects).
+//   3. the footer, on EVERY page (including the markdown ones).
+//   4. the global CSS: the smooth scrolling of the anchors, the width of the
+//      columns, and the rules that make the bilingual system work.
 //
-// Fonts and colours are untouched: still Poppins, still #7a49c5 / #f9f6fc.
+// Props (all optional):
+//   title                 one title for the browser tab
+//   title_fr / title_en   one title per language: the tab then follows the
+//                         FR / EN switch
 // ==========================================================================
 import LangSwitch from '../components/LangSwitch.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { siteName } from '../site';
-import { bilingualHtml } from '../i18n/index';
+import { siteName, menu } from '../site';
+import { theme, themeCss } from '../theme';
 
 interface Props {
 	/** Text of the browser tab. Defaults to your name. */
@@ -30,8 +35,7 @@ interface Props {
 const { title = siteName, title_fr, title_en } = Astro.props;
 
 // When both are given, they are written on <html> as data attributes and
-// src/i18n/i18n.js copies the right one into document.title. A page can also
-// pass a single `title` and ignore the languages.
+// src/i18n/i18n.js copies the right one into document.title.
 const hasBilingualTitle = Boolean(title_fr && title_en);
 ---
 
@@ -46,15 +50,30 @@ const hasBilingualTitle = Boolean(title_fr && title_en);
 >
 	<head>
 		<meta charset="utf-8" />
-		<!-- public/favicon.svg. Delete this line if you would rather use a
-		     favicon.ico (put the file in public/ and change the href). -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<!-- The font comes from src/theme.ts (`font.googleUrl`), so you can
+		     change the whole site's typeface from that one line. -->
+		<link href={theme.font.googleUrl} rel="stylesheet" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{hasBilingualTitle ? title_en : title}</title>
+
+		<!-- ==================================================================
+		     THE THEME
+		     src/theme.ts turns your colours and sizes into a block of CSS
+		     variables and prints it here, once, in the <head> of every page:
+
+		         :root { --c-primary: #7a49c5; --header-h: 60px; ... }
+
+		     Every component then uses var(--c-primary), var(--header-h)...
+		     That is the "one place to change everything" you asked for: edit
+		     src/theme.ts, save, and the whole site follows.
+		     `set:html` means "write this string as HTML, do not treat it as a
+		     file to process".
+		     ================================================================== -->
+		<style is:global set:html={themeCss}></style>
 
 		<!-- Runs before the page is painted, so the visitor never sees a flash
 		     of the wrong language. `is:inline` = Astro copies it as it is. -->
@@ -81,23 +100,47 @@ const hasBilingualTitle = Boolean(title_fr && title_en);
 		</script>
 	</head>
 	<body>
-		<header>
-			{/* Your name, as a plain title: not a link, not a button.
-			    (The "Home" entry of the menu already goes back to /.) */}
-			<h1>{siteName}</h1>
-			<nav>
+		<!-- ==================================================================
+		     THE HEADER
+		     `position: sticky` keeps it at the top while you scroll the
+		     one-page site, so the menu is always one click away from any
+		     section.
+		     The brand is a LINK back to the top of the home page, not a title:
+		     the <h1> of the site is your name in the hero (Hero.astro) — one
+		     <h1> per page is better for search engines and screen readers.
+		     ================================================================== -->
+		<header class="site-header">
+			<a class="site-brand" href="/#home">{siteName}</a>
+
+			<!-- The menu, built from `menu` in src/site.ts.
+			     Each `anchor` ('#about') becomes '/#about': the same button works
+			     from any page and always brings the visitor to the right
+			     section of the home page.
+			     `data-nav` is the id of the section: the small script at the
+			     bottom of this file uses it to highlight the section you are
+			     currently reading. -->
+			<nav class="site-nav" data-i18n-aria="nav.menu">
 				<ul>
-					<!-- Each label exists in both languages; the CSS shows one. -->
-					<li><a href="/"><span set:html={bilingualHtml('nav.home')} /></a></li>
-					<li><a href="/about"><span set:html={bilingualHtml('nav.about')} /></a></li>
-					<li><a href="/projects"><span set:html={bilingualHtml('nav.projects')} /></a></li>
+					{
+						menu.map((item) => (
+							<li>
+								<a href={`/${item.anchor}`} data-nav={item.id}>
+									<span lang="fr">{item.label.fr}</span>
+									<span lang="en">{item.label.en}</span>
+								</a>
+							</li>
+						))
+					}
 				</ul>
 			</nav>
+
 			<LangSwitch />
 		</header>
+
 		<main>
 			<slot />
 		</main>
+
 		<SiteFooter />
 
 		<!-- The language logic (buttons, aria-labels, saved choice). Imported
@@ -105,10 +148,198 @@ const hasBilingualTitle = Boolean(title_fr && title_en);
 		<script>
 			import '../i18n/i18n.js';
 		</script>
+
+		<!-- ==================================================================
+		     The menu highlight ("scroll spy")
+		     Adds .is-current to the menu button of the section you are looking
+		     at. It only does something on the one-page home: on the other
+		     pages there is no section with those ids, and the script stops.
+		     ================================================================== -->
+		<script>
+			const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-nav]'));
+
+			// Keep only the buttons whose section exists on this page.
+			const targets = navLinks
+				.map((link) => document.getElementById(link.dataset.nav ?? ''))
+				.filter((el): el is HTMLElement => el !== null);
+
+			if (targets.length > 0) {
+				const headerHeight = () => {
+					const value = getComputedStyle(document.documentElement).getPropertyValue('--header-h');
+					return Number.parseFloat(value) || 0;
+				};
+
+				let ticking = false;
+
+				function updateCurrentSection() {
+					ticking = false;
+
+					// A line a bit below the header and a third of the way down the
+					// screen: the section that crosses it is "the one you are in".
+					const line = window.scrollY + headerHeight() + window.innerHeight * 0.3;
+
+					let current: string | null = targets[0]?.id ?? null;
+					for (const section of targets) {
+						if (section.getBoundingClientRect().top + window.scrollY <= line) current = section.id;
+					}
+
+					navLinks.forEach((link) => {
+						const isCurrent = link.dataset.nav === current;
+						link.classList.toggle('is-current', isCurrent);
+						link.setAttribute('aria-current', isCurrent ? 'true' : 'false');
+					});
+				}
+
+				// rAF throttle: the calculation runs at most once per frame,
+				// even if the visitor scrolls with a trackpad at high speed.
+				function onScroll() {
+					if (ticking) return;
+					ticking = true;
+					window.requestAnimationFrame(updateCurrentSection);
+				}
+
+				window.addEventListener('scroll', onScroll, { passive: true });
+				window.addEventListener('resize', onScroll);
+				updateCurrentSection();
+			}
+		</script>
 	</body>
 </html>
 
 <style>
+	/* ==================================================================
+	   The header.
+	   ================================================================== */
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 18px;
+		height: var(--header-h);
+		padding: 0 20px;
+		box-sizing: border-box;
+		background: var(--c-header-bg);
+		/* The blur is what makes the header readable when it slides over the
+		   hero pictures. Harmless where it is not supported. */
+		backdrop-filter: blur(10px);
+		border-bottom: 1px solid var(--c-border-soft);
+	}
+
+	.site-brand {
+		font-size: 1.1em;
+		font-weight: 500;
+		white-space: nowrap;
+		color: var(--c-text);
+		text-decoration: none;
+	}
+
+	.site-brand:hover {
+		color: var(--c-primary);
+	}
+
+	.site-nav ul {
+		display: flex;
+		gap: 4px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.site-nav a {
+		position: relative;
+		display: inline-block;
+		padding: 6px 10px;
+		color: var(--c-text);
+		font-size: 0.95rem;
+		text-decoration: none;
+	}
+
+	/* The purple bar under the current section's button. It grows from the
+	   middle, which is a nicer movement than a simple colour change. */
+	.site-nav a::after {
+		content: '';
+		position: absolute;
+		left: 10px;
+		right: 10px;
+		bottom: 0;
+		height: 2px;
+		border-radius: 2px;
+		background: var(--c-primary);
+		transform: scaleX(0);
+		transition: transform 0.18s ease;
+	}
+
+	.site-nav a:hover::after {
+		transform: scaleX(1);
+	}
+
+	.site-nav a.is-current {
+		color: var(--c-primary);
+	}
+
+	.site-nav a.is-current::after {
+		transform: scaleX(1);
+	}
+
+	.site-nav a:focus-visible,
+	.site-brand:focus-visible {
+		outline: 2px solid var(--c-primary);
+		outline-offset: 2px;
+	}
+
+	/* Small screens: the menu wraps under the name, and stays scrollable if it
+	   still does not fit. */
+	@media (max-width: 700px) {
+		.site-header {
+			height: auto;
+			flex-wrap: wrap;
+			row-gap: 4px;
+			padding: 8px 14px;
+		}
+		.site-nav {
+			order: 3;
+			width: 100%;
+			overflow-x: auto;
+		}
+		.site-nav ul {
+			justify-content: center;
+		}
+		.site-brand {
+			font-size: 1em;
+		}
+		.site-nav a {
+			padding: 4px 8px;
+			font-size: 0.9rem;
+		}
+	}
+</style>
+
+<style is:global>
+	/* ==================================================================
+	   The <body> and the marks. Everything reads the variables printed by
+	   src/theme.ts at the top of this file.
+	   ================================================================== */
+	* {
+		font-family: var(--font-family);
+	}
+
+	html {
+		/* The anchors of the menu (#about, #projects) glide instead of jumping.
+		   `scroll-margin-top` on the sections (Section.astro) stops them from
+		   landing under the sticky header. */
+		scroll-behavior: smooth;
+	}
+
+	/* ...except for someone who asked the system to reduce animations. */
+	@media (prefers-reduced-motion: reduce) {
+		html {
+			scroll-behavior: auto;
+		}
+	}
+
 	body {
 		margin: 0;
 		/* header at the top, content in the middle, footer at the bottom even
@@ -116,56 +347,25 @@ const hasBilingualTitle = Boolean(title_fr && title_en);
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
+		background: var(--c-page);
+		/* The colour is set HERE and not on `*` anymore, so the hero can be
+		   white-text-on-picture without fighting a global rule. */
+		color: var(--c-text);
 	}
+
 	main {
 		flex: 1 0 auto;
 	}
-	header {
-		background-color: #f9f6fc;
-		padding: 10px 20px;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 16px;
-		border-bottom: 1px solid #ece6f6;
 
-		h1 {
-			margin: 0;
-			font-size: 1.3em;
-			white-space: nowrap;
-		}
-		ul {
-			display: flex;
-			list-style-type: none;
-			gap: 16px;
-			margin: 0;
-			padding: 0;
-		}
-		a {
-			text-decoration: none;
-			border-bottom: 1px dashed;
-		}
-	}
-
-	/* Small screens: the name shrinks, the menu wraps under it. */
-	@media (max-width: 640px) {
-		header {
-			flex-wrap: wrap;
-		}
-		header h1 {
-			font-size: 1.1em;
-		}
-	}
-</style>
-
-<style is:global>
-	* {
-		font-family: "Poppins", sans-serif;
-		color: #333;
-	}
+	/* ==================================================================
+	   .content — the column used by the pages that are NOT the one-page
+	   home: the CV (/cv), a project page (/projects/<name>) and the
+	   markdown layouts. The sections of the home page use the same widths
+	   through Section.astro.
+	   ================================================================== */
 	.content {
 		width: 100%;
-		max-width: 1200px;
+		max-width: var(--w-content);
 		margin: 60px auto;
 		padding: 0 20px;
 		box-sizing: border-box;
@@ -178,17 +378,17 @@ const hasBilingualTitle = Boolean(title_fr && title_en);
 		}
 	}
 
-	/* ======================================================================
+	/* ==================================================================
 	   i18n — the three rules that make the whole system work.
-	   ----------------------------------------------------------------------
-	   Both languages are always in the HTML. The current language is written
-	   on <html> as data-lang, and these rules hide everything that is not in
-	   that language:
-	     - any element with lang="fr" / lang="en" (components, markdown blocks)
+	   ------------------------------------------------------------------
+	   Both languages are always in the HTML. The current language is
+	   written on <html> as data-lang, and these rules hide everything that
+	   is not in that language:
+	     - any element with lang="fr" / lang="en" (components, markdown)
 	     - any element with the class "bilingual"
 	     - [hidden], used by the scripts to remove something from the page
-	   If data-lang is missing for any reason, English is shown (the default).
-	   ====================================================================== */
+	   If data-lang is missing for any reason, English is shown (default).
+	   ================================================================== */
 	[data-lang='fr'] [lang='en']:not(html),
 	[data-lang='en'] [lang='fr']:not(html),
 	[data-lang='fr'] .bilingual[lang='en'],
@@ -208,16 +408,18 @@ const hasBilingualTitle = Boolean(title_fr && title_en);
 		display: inline;
 	}
 
-	/* Markdown bodies (project pages, CV) reuse the same typography as the
-	   rest of the site. */
+	/* ==================================================================
+	   Markdown bodies (project pages, CV) reuse the same typography as the
+	   rest of the site.
+	   ================================================================== */
 	.content img {
 		max-width: 100%;
 		height: auto;
 	}
 	.content pre {
-		background: #f6f3fb;
-		border: 1px solid #e6e0f2;
-		border-radius: 4px;
+		background: var(--c-tint);
+		border: 1px solid var(--c-border);
+		border-radius: var(--r-sm);
 		padding: 14px 16px;
 		overflow-x: auto;
 		font-size: 0.9rem;
@@ -228,16 +430,16 @@ const hasBilingualTitle = Boolean(title_fr && title_en);
 		font-size: 0.9em;
 	}
 	.content p code {
-		background: #f6f3fb;
-		border: 1px solid #e6e0f2;
-		border-radius: 3px;
+		background: var(--c-tint);
+		border: 1px solid var(--c-border);
+		border-radius: var(--r-xs);
 		padding: 1px 5px;
 	}
 	.content blockquote {
 		margin: 1em 0;
 		padding: 2px 0 2px 16px;
-		border-left: 3px solid #d8cfe8;
-		color: #6b6478;
+		border-left: 3px solid var(--c-border-accent);
+		color: var(--c-text-muted);
 	}
 	.content table {
 		border-collapse: collapse;
@@ -246,11 +448,11 @@ const hasBilingualTitle = Boolean(title_fr && title_en);
 	}
 	.content th,
 	.content td {
-		border: 1px solid #e6e0f2;
+		border: 1px solid var(--c-border);
 		padding: 8px 10px;
 		text-align: left;
 	}
 	.content th {
-		background: #f9f6fc;
+		background: var(--c-tint);
 	}
 </style>

@@ -1,0 +1,153 @@
+---
+// ==========================================================================
+// Section.astro — the frame shared by every section of the one-page site.
+// --------------------------------------------------------------------------
+// It draws NOTHING of the content: it puts the title block in place and then
+// renders whatever you write between its tags.
+//
+//     <Section id="about" eyebrow={…} title={…} lead={…}>
+//       ... your content ...
+//     </Section>
+//
+// What it brings to the site:
+//   1. the anchor:  the `id` is what the menu buttons of the header point at
+//      (Home / About / Projects -> #home / #about / #projects). Without it,
+//      the smooth scroll has nothing to scroll to.
+//   2. scroll-margin-top: the header is sticky, so without this offset an
+//      anchor would land UNDER the header and the title would be hidden.
+//   3. the delimitation between two sections (asked for in the brief):
+//      a hairline across the whole width, a small purple bar under the title,
+//      and — when `tone="tint"` — a light purple background. Alternating the
+//      background of the sections is what makes the separation obvious at a
+//      glance, even on a phone.
+//   4. the same width, spacing and typography for every section, so you never
+//      position a title by hand.
+//
+// Props (all optional except `id`):
+//   id      the anchor, e.g. "about"      -> /#about
+//   eyebrow the small line above the title, e.g. "01 — About"
+//   title   the big title
+//   lead    one sentence under the title
+//   tone    'plain' (white) | 'tint' (light purple background)
+// ==========================================================================
+import Bilingual from './Bilingual.astro';
+
+interface Props {
+	id: string;
+	eyebrow?: { fr: string; en: string };
+	title?: { fr: string; en: string };
+	lead?: { fr: string; en: string };
+	tone?: 'plain' | 'tint';
+}
+
+const { id, eyebrow, title, lead, tone = 'plain' } = Astro.props;
+---
+
+<section id={id} class:list={['section', tone === 'tint' && 'section--tint']}>
+	<!-- The title block. Both languages are in the HTML, CSS shows one. -->
+	<header class="section-head">
+		{
+			eyebrow && (
+				<p class="section-eyebrow">
+					<Bilingual fr={eyebrow.fr} en={eyebrow.en} />
+				</p>
+			)
+		}
+		{
+			title && (
+				<h2 class="section-title">
+					<Bilingual fr={title.fr} en={title.en} />
+				</h2>
+			)
+		}
+		{
+			lead && (
+				<p class="section-lead">
+					<Bilingual fr={lead.fr} en={lead.en} />
+				</p>
+			)
+		}
+	</header>
+
+	<!-- The content of the section. -->
+	<div class="section-body">
+		<slot />
+	</div>
+</section>
+
+<style>
+	.section {
+		position: relative;
+		/* Breathing room around the whole section: one value in src/theme.ts. */
+		padding: var(--section-gap) 0;
+		/* --- The delimitation ------------------------------------------------
+		   1. a 1px line across the page, so two sections never blend together */
+		border-top: 1px solid var(--c-border);
+		/* 2. the anchor scrolls to this position, which leaves room for the
+		      sticky header (its height is --header-h, in src/theme.ts). */
+		scroll-margin-top: calc(var(--header-h) + 14px);
+	}
+
+	/* 3. an alternating background: every other section is light purple. */
+	.section--tint {
+		background: var(--c-tint);
+	}
+
+	/* The last section of the page has no line under it (the footer has one). */
+
+	/* --- The title block ------------------------------------------------- */
+	.section-head {
+		max-width: var(--w-content);
+		margin: 0 auto;
+		padding: 0 20px;
+		text-align: center;
+	}
+
+	.section-eyebrow {
+		margin: 0;
+		font-size: 0.78rem;
+		font-weight: 500;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--c-primary);
+	}
+
+	.section-title {
+		margin: 12px 0 0;
+		font-size: 2.1em;
+		line-height: 1.2;
+	}
+
+	/* The small purple bar under the title: it is what the eye reads as
+	   "a new section starts here". */
+	.section-title::after {
+		content: '';
+		display: block;
+		width: 56px;
+		height: 3px;
+		margin: 18px auto 0;
+		border-radius: 2px;
+		background: linear-gradient(90deg, var(--c-primary), var(--c-primary-hover));
+	}
+
+	.section-lead {
+		margin: 16px auto 0;
+		max-width: 64ch;
+		font-size: 1.05rem;
+		font-weight: 300;
+		color: var(--c-text-muted);
+	}
+
+	/* --- The content ------------------------------------------------------ */
+	.section-body {
+		max-width: var(--w-content);
+		margin: 38px auto 0;
+		padding: 0 20px;
+	}
+
+	@media (max-width: 640px) {
+		.section-title {
+			font-size: 1.7em;
+		}
+	}
+</style>

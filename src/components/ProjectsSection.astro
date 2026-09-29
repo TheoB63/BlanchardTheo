@@ -1,0 +1,80 @@
+---
+// ==========================================================================
+// ProjectsSection.astro — the BODY of the "Projects" section.
+// --------------------------------------------------------------------------
+// Two layouts, chosen with ONE word in src/site.ts:
+//
+//   sections.projects.layout = 'rail'  -> the horizontal, draggable row of the
+//                                          old home page, with the two arrows
+//                                          under it (ProjectRail.astro).
+//                                          The default, and what the old home
+//                                          page did.
+//   sections.projects.layout = 'grid'  -> all the projects in a grid
+//
+// Both use the same ProjectCard.astro, so a card looks the same either way.
+//
+// The projects themselves come from the .md files of src/projects/: add a file
+// there and it appears here by itself (see src/project-list.ts, which also
+// prints in the terminal how many were found).
+//
+// Props:
+//   projects : every project, already sorted newest first
+//   layout   : 'grid' | 'rail'  (comes from src/site.ts)
+// ==========================================================================
+import type { CollectionEntry } from 'astro:content';
+import ProjectCard from './ProjectCard.astro';
+import ProjectRail from './ProjectRail.astro';
+import EmptyProjects from './EmptyProjects.astro';
+import Bilingual from './Bilingual.astro';
+
+interface Props {
+	projects: CollectionEntry<'projects'>[];
+	layout?: 'grid' | 'rail';
+	/** The small "drag the cards" line under the rail. */
+	hint?: boolean;
+}
+
+const { projects, layout = 'rail', hint = true } = Astro.props;
+---
+
+{
+	projects.length === 0 ? (
+		// Explains ON THE PAGE what to check. Faster than hunting for a silent
+		// build error (see EmptyProjects.astro).
+		<EmptyProjects />
+	) : layout === 'rail' ? (
+		<>
+			<ProjectRail projects={projects} />
+			{hint && (
+				<p class="rail-hint">
+					<Bilingual k="home.projectsHint" />
+				</p>
+			)}
+		</>
+	) : (
+		<div class="grid">
+			{projects.map((project) => (
+				<ProjectCard project={project} />
+			))}
+		</div>
+	)
+}
+
+<style>
+	/* The grid: as many 280px columns as fit, so it goes from 4 columns on a
+	   wide screen to 1 on a phone without a single media query. */
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: 22px;
+	}
+
+	/* Only used in the 'rail' layout. */
+	.rail-hint {
+		margin: 16px 0 0;
+		text-align: center;
+		font-size: 0.9rem;
+		font-weight: 300;
+		color: var(--c-text-soft);
+	}
+</style>

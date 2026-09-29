@@ -124,20 +124,20 @@ const dateEn = date?.toLocaleDateString('en-GB', { month: 'long', year: 'numeric
 
 <style>
 	.project-page {
-		max-width: 820px;
+		max-width: var(--w-column);
 	}
 
 	.back {
 		display: inline-block;
 		font-size: 0.95rem;
-		color: #6b6478;
+		color: var(--c-text-muted);
 		text-decoration: none;
-		border-bottom: 1px dashed #cfc5e2;
+		border-bottom: 1px dashed var(--c-border-dashed);
 	}
 
 	.back:hover {
-		color: #7a49c5;
-		border-bottom-color: #7a49c5;
+		color: var(--c-primary);
+		border-bottom-color: var(--c-primary);
 	}
 
 	.cover {
@@ -148,14 +148,14 @@ const dateEn = date?.toLocaleDateString('en-GB', { month: 'long', year: 'numeric
 		display: block;
 		width: 100%;
 		height: auto;
-		border: 1px solid #e6e0f2;
-		border-radius: 4px;
+		border: 1px solid var(--c-border);
+		border-radius: var(--r-sm);
 	}
 
 	.project-head {
 		margin-top: 22px;
 		padding-bottom: 20px;
-		border-bottom: 1px solid #ece6f6;
+		border-bottom: 1px solid var(--c-border-soft);
 	}
 
 	.project-title {
@@ -168,7 +168,7 @@ const dateEn = date?.toLocaleDateString('en-GB', { month: 'long', year: 'numeric
 	.project-date {
 		margin: 6px 0 0 !important;
 		font-size: 0.9rem !important;
-		color: #8a8398;
+		color: var(--c-text-soft);
 		font-weight: 300;
 	}
 
@@ -176,7 +176,7 @@ const dateEn = date?.toLocaleDateString('en-GB', { month: 'long', year: 'numeric
 		margin: 12px 0 0 !important;
 		font-size: 1.1em;
 		font-weight: 300;
-		color: #6b6478;
+		color: var(--c-text-muted);
 	}
 
 	/* Tags: same square chips as on the cards. */
@@ -196,10 +196,10 @@ const dateEn = date?.toLocaleDateString('en-GB', { month: 'long', year: 'numeric
 	.tag {
 		display: inline-block;
 		padding: 3px 8px;
-		border: 1px solid #e0d8ef;
-		border-radius: 3px;
-		background: #f9f6fc;
-		color: #6b6478;
+		border: 1px solid var(--c-border-accent);
+		border-radius: var(--r-xs);
+		background: var(--c-tint);
+		color: var(--c-text-muted);
 		font-size: 0.8rem;
 	}
 
@@ -212,27 +212,27 @@ const dateEn = date?.toLocaleDateString('en-GB', { month: 'long', year: 'numeric
 
 	.button {
 		display: inline-block;
-		background-color: #7a49c5;
-		color: #fff;
+		background-color: var(--c-primary);
+		color: var(--c-surface);
 		padding: 6px 10px;
-		border-radius: 2px;
+		border-radius: var(--r-btn);
 		text-decoration: none;
 		font-size: 1rem;
 	}
 
 	.button:hover {
-		background-color: #965ee9;
+		background-color: var(--c-primary-hover);
 	}
 
 	.button-ghost {
-		background: #fff;
-		color: #7a49c5;
-		border: 1px solid #d8cfe8;
+		background: var(--c-surface);
+		color: var(--c-primary);
+		border: 1px solid var(--c-border-accent);
 	}
 
 	.button-ghost:hover {
-		background: #f9f6fc;
-		color: #965ee9;
+		background: var(--c-tint);
+		color: var(--c-primary-hover);
 	}
 
 	/* The markdown body: the global .content rules give it its typography. */

@@ -259,9 +259,9 @@ const { projects } = Astro.props;
 
 	/* Keyboard focus on the rail itself. */
 	.rail:focus-visible {
-		outline: 2px solid #7a49c5;
+		outline: 2px solid var(--c-primary);
 		outline-offset: 4px;
-		border-radius: 4px;
+		border-radius: var(--r-sm);
 	}
 
 	/* --- The arrows ------------------------------------------------------ */
@@ -277,10 +277,10 @@ const { projects } = Astro.props;
 		justify-content: center;
 		width: 40px;
 		height: 34px;
-		border: 1px solid #e2dcf0;
-		border-radius: 4px;
-		background: #fff;
-		color: #333;
+		border: 1px solid var(--c-border-strong);
+		border-radius: var(--r-sm);
+		background: var(--c-surface);
+		color: var(--c-text);
 		cursor: pointer;
 		transition:
 			border-color 0.15s ease,
@@ -298,12 +298,12 @@ const { projects } = Astro.props;
 	}
 
 	.rail-btn:hover:not(:disabled) {
-		border-color: #7a49c5;
-		color: #7a49c5;
+		border-color: var(--c-primary);
+		color: var(--c-primary);
 	}
 
 	.rail-btn:focus-visible {
-		outline: 2px solid #7a49c5;
+		outline: 2px solid var(--c-primary);
 		outline-offset: 2px;
 	}
 

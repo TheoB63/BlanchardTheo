@@ -3,8 +3,8 @@
 // generated from the .md files of src/projects/.
 // ==========================================================================
 export const fr = {
-	'projects.title': 'Projets',
-	'projects.intro': 'Voici mes projets, du plus récent au plus ancien.',
+	// The title of the projects section ("Mes projets") and its lead sentence
+	// are in src/site.ts -> `sections.projects`.
 	'projects.empty':
 		'Aucun projet détecté : le dossier src/projects/ ne contient pas de fichier .md utilisable.',
 	'projects.emptyHint':
@@ -21,8 +21,6 @@ export const fr = {
 };
 
 export const en: typeof fr = {
-	'projects.title': 'Projects',
-	'projects.intro': 'Here are my projects, from the most recent to the oldest.',
 	'projects.empty':
 		'No project found: src/projects/ has no usable .md file.',
 	'projects.emptyHint':

@@ -1,241 +1,38 @@
 ---
 // ==========================================================================
-// about.astro — the about page  (URL: /about)
+// about.astro — A REDIRECT PAGE.  (URL: /about)
 // --------------------------------------------------------------------------
-// Replace the text below with your own. The structure is a list of blocks:
-//   - who I am
-//   - my studies
-//   - what I work with
-//   - my links (GitHub, LinkedIn, email, phone, CV)
-//   - my CV, displayed as a PDF right in the page
+// The about content is now the "#about" section of the one-page home
+// (src/components/AboutSection.astro): writing it twice would mean maintaining
+// it twice.
 //
-// Each block is written twice, once per language. Two ways to do it, both are
-// used here so you can pick the one you prefer:
+// This file stays for one reason only: an old link, a bookmark or a search
+// result pointing at /about must not end on a 404. It sends the visitor to
+// /#about (the section of the home page) and does nothing else.
 //
-//   A. inline, with lang="fr" / lang="en" on the element:
-//        <p lang="fr">Bonjour</p>
-//        <p lang="en">Hello</p>
+// HOW THE REDIRECT WORKS on a static site (no server):
+//   - <meta http-equiv="refresh"> is the oldest and most widely supported way
+//     to redirect a page; it works on every host, including GitHub Pages;
+//   - a real <a> link is kept for the rare visitor whose browser ignores it;
+//   - `noindex` asks search engines to forget /about and index / instead.
 //
-//   B. with the Bilingual component, for short strings that are also used
-//      elsewhere:
-//        <h3><Bilingual k="about.studies" /></h3>
-//
-// The CSS that shows only one of the two is in BaseLayout.astro.
-//
-// Everything about you (name, links, email, phone, CV) comes from src/site.ts.
+// YOU CAN DELETE THIS FILE once nothing links to /about anymore (your CV, a
+// PDF, a social profile...). The site does not depend on it.
 // ==========================================================================
-import BaseLayout from '../layouts/BaseLayout.astro';
-import LinkBar from '../components/LinkBar.astro';
-import Bilingual from '../components/Bilingual.astro';
-import { siteName, contact, phoneDisplay } from '../site';
+const target = '/#about';
 ---
 
-<BaseLayout title_fr={`À propos — ${siteName}`} title_en={`About — ${siteName}`}>
-	<div class="content about">
-		<h2><Bilingual k="about.title" /></h2>
-
-		<!-- ---------------------------------------------------------------
-		     Who I am. Write as many paragraphs as you need, in both languages.
-		     --------------------------------------------------------------- -->
-		<section class="block">
-			<p lang="fr">
-				Je m’appelle Théo Blanchard. Je suis etudiants en 4ème et dernière année à Créajeux, dans le développement de jeux vidéo.
-				Je travaille principalement	en C++ et en C#, sur Unity, Unreal et mon moteur Equinox (trouvable dans mes projets).
-			</p>
-			<p lang="fr">
-				Je suis passionné par la programmation bas niveau et la conception de moteurs.
-				Jusqu'à présent dans mes projets j'ai principalement fait de la programmation gameplay.
-			</p>
-			<p lang="fr">
-				Vous retrouverais sur les pages des différents projets plus en détail sur quoi j'ai travaillé sur chaque projets et qu'elles ont était les difficulté rencontré.
-			</p>
-
-			<p lang="en">
-				My name is Théo Blanchard. I am a fourth-year student, my final year at Créajeux, studying video game development.
-                I work mainly in C++ and C#, using Unity, Unreal and my own engine, Equinox (which can be found in my projects).
-			</p>
-			<p lang="en">
-				I’m passionate about low-level programming and engine design.
-                So far, in my projects, I’ve mainly been involved in gameplay programming.
-			</p>
-			<p lang="en">
-				You’ll find more details on the pages for the various projects about what I worked on for each one and what difficulties I encountered.
-			</p>
-		</section>
-
-		<!-- ---------------------------------------------------------------
-		     Studies. One <li> per line; delete or copy freely.
-		     --------------------------------------------------------------- -->
-		<section class="block">
-			<h3><Bilingual k="about.studies" /></h3>
-
-			<ul lang="fr">
-				<li>
-					<p style="margin: 0;">2022-2027 : Creajeux - Programmeur Jeux Vidéo</p>
-					<a style="display: block; margin-top: 2px;">Creajeux, l'école des Métiers du jeu vidéo - Nîmes</a>
-				</li>
-				<li>
-					<p style="margin: 0;">2020-2022 : BTS Moteur à combustion interne (MCI)</p>
-					<a style="display: block; margin-top: 2px;">Lycée Isaac de l'étoile - Poitiers</a>
-				</li>
-				<li>
-					<p style="margin: 0;">2017-2020 : Bac Sciences et Technologies de l’Agronomie et du Vivant (STAV)</p>
-					<a style="display: block; margin-top: 2px;">Lycée Louis Pasteur Marmilhat - Lempdes</a>
-				</li>
-			</ul>
-
-			<ul lang="en">			
-				<li>
-					<p style="margin: 0;">2022-2027: Creajeux - Video Game Programmer</p>
-					<a style="display: block; margin-top: 2px;">Creajeux, School of Video Game Careers - Nîmes</a>
-				</li>
-				<li>
-					<p style="margin: 0;">2020-2022: BTS Internal Combustion Engines (MCI)</p>
-					<a style="display: block; margin-top: 2px;">Lycée Isaac de l'étoile - Poitiers</a>
-				</li>
-				<li>
-					<p style="margin: 0;">2017-2020: Technological High School Diploma in Agricultural and Life Sciences (Bac STAV)</p>
-					<a style="display: block; margin-top: 2px;">Lycée Louis Pasteur Marmilhat - Lempdes</a>
-				</li>
-			</ul>
-		</section>
-
-		<!-- ---------------------------------------------------------------
-		     Skills. A definition list reads well in both languages.
-		     --------------------------------------------------------------- -->
-		<section class="block">
-			<h3><Bilingual k="about.skills" /></h3>
-
-			<dl lang="fr">
-				<dt>Langages</dt>
-				<dd>C++ (17/20), C#, C, Lua</dd>
-				<dt>Moteurs</dt>
-				<dd>Unity , Unreal , moteurs maison</dd>
-				<dt>Autour du code</dt>
-				<dd>Premake, GitHub</dd>
-			</dl>
-
-			<dl lang="en">
-				<dt>Languages</dt>
-				<dd>C++ (17/20), C#, C, Lua</dd>
-				<dt>Engines</dt>
-				<dd>Unity , Unreal , in-house engines</dd>
-				<dt>Around the code</dt>
-				<dd>Premake, GitHub</dd>
-			</dl>
-		</section>
-
-		<!-- ---------------------------------------------------------------
-		     Links. LinkBar is the same reusable component as in the intro of
-		     the home page and in the footer; the list is built in src/site.ts
-		     from the `contact` block.
-
-		     No separate purple "see my CV" button here: the CV is already one
-		     of the links below.
-		     --------------------------------------------------------------- -->
-		<section class="block">
-			<h3><Bilingual k="about.links" /></h3>
-			<LinkBar size="md" />
-
-			<!-- The two coordinates worth reading in full, spelled out.
-			     Each line disappears on its own when the field is empty in
-			     src/site.ts. -->
-			{
-				contact.email && (
-					<p class="coordinate">
-						<span class="coordinate-label">Email</span>
-						<a href={`mailto:${contact.email}`}>{contact.email}</a>
-					</p>
-				)
-			}
-			{
-				phoneDisplay && (
-					<p class="coordinate">
-						<span class="coordinate-label">
-							<Bilingual k="about.phone" />
-						</span>
-						<a href={`tel:${contact.phone}`}>{phoneDisplay}</a>
-					</p>
-				)
-			}
-		</section>
-	</div>
-</BaseLayout>
-
-<style>
-	.about .block {
-		margin-top: 34px;
-	}
-
-	.about h3 {
-		margin: 0 0 10px;
-		font-size: 1.25em;
-		font-weight: 500;
-	}
-
-	.about p {
-		/* max-width: 68ch; */
-	}
-
-	.about ul {
-		margin: 0;
-		padding-left: 22px;
-	}
-
-	.about li {
-		margin-bottom: 4px;
-	}
-
-	.about dl {
-		margin: 0;
-		display: grid;
-		grid-template-columns: max-content 1fr;
-		gap: 6px 20px;
-	}
-
-	.about dt {
-		font-weight: 500;
-		color: #6b6478;
-	}
-
-	.about dd {
-		margin: 0;
-	}
-
-	/* --- Coordinates spelled out under the links ------------------------- */
-	.coordinate {
-		margin: 12px 0 0;
-		font-size: 0.95rem;
-	}
-
-	.coordinate-label {
-		color: #8a8398;
-		margin-right: 8px;
-	}
-
-	.coordinate a {
-		color: #333;
-		text-decoration: none;
-		border-bottom: 1px solid #e2dcf0;
-	}
-
-	.coordinate a:hover {
-		color: #7a49c5;
-		border-color: #7a49c5;
-	}
-	
-	/* Below 640px the definition list stacks instead of overflowing, and the
-	   PDF viewer gets shorter so the page stays usable on a phone. */
-	@media (max-width: 640px) {
-		.about dl {
-			grid-template-columns: 1fr;
-			gap: 2px;
-		}
-		.about dt {
-			margin-top: 10px;
-		}
-		.cv-viewer {
-			height: 480px;
-		}
-	}
-</style>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="refresh" content={`0; url=${target}`} />
+		<link rel="canonical" href={target} />
+		<meta name="robots" content="noindex" />
+		<title>→ {target}</title>
+	</head>
+	<body>
+		<p>
+			Redirecting to <a href={target}>{target}</a>…
+		</p>
+	</body>
+</html>

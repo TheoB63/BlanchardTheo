@@ -1,55 +1,31 @@
 ---
 // ==========================================================================
-// projects/index.astro — the projects page  (URL: /projects)
+// projects/index.astro — A REDIRECT PAGE.  (URL: /projects)
 // --------------------------------------------------------------------------
-// All the projects, in a grid, using the same reusable card as the home page
-// (ProjectCard.astro). Sorted newest first, exactly like the rail.
+// Every project is now listed in the "#projects" section of the one-page home
+// (see src/pages/index.astro). This file only keeps the old /projects address
+// alive so that a link or a search result does not end on a 404.
 //
-// Add a .md file in src/projects/ and it appears here by itself. The terminal
-// prints how many projects were found (see src/project-list.ts).
+// IMPORTANT: it does NOT replace the individual project pages. Those are still
+// at /projects/<file-name> and are built from src/projects/*.md by
+// src/pages/projects/[id].astro. Only the *list* moved to the home page.
+//
+// You can delete this file once nothing links to /projects anymore.
 // ==========================================================================
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
-import { listProjects } from '../../project-list';
-import Bilingual from '../../components/Bilingual.astro';
-import EmptyProjects from '../../components/EmptyProjects.astro';
-
-// Already sorted, newest first (see src/project-list.ts).
-const projects = await listProjects();
+const target = '/#projects';
 ---
 
-<BaseLayout title_fr="Projets — Blanchard Theo" title_en="Projects — Blanchard Theo">
-	<div class="content">
-		<h2><Bilingual k="projects.title" /></h2>
-		<p class="intro"><Bilingual k="projects.intro" /></p>
-
-		{
-			projects.length > 0 ? (
-				<div class="grid">
-					{projects.map((project) => (
-						<ProjectCard project={project} />
-					))}
-				</div>
-			) : (
-				<EmptyProjects />
-			)
-		}
-	</div>
-</BaseLayout>
-
-<style>
-	.intro {
-		font-weight: 300;
-		color: #6b6478;
-		margin-top: -6px;
-	}
-
-	/* The grid: as many 280px columns as fit, so it goes from 4 columns on a
-	   wide screen to 1 on a phone without a single media query. */
-	.grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-		gap: 22px;
-		margin-top: 30px;
-	}
-</style>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="refresh" content={`0; url=${target}`} />
+		<link rel="canonical" href={target} />
+		<meta name="robots" content="noindex" />
+		<title>→ {target}</title>
+	</head>
+	<body>
+		<p>
+			Redirecting to <a href={target}>{target}</a>…
+		</p>
+	</body>
+</html>

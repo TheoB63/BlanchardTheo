@@ -18,16 +18,20 @@
 //                           true, so no mailbox opens)
 //
 // Props:
-//   size : 'md' (intro, about page) or 'sm' (footer)
+//   size    : 'md' (hero, about section) or 'sm' (footer)
+//   variant : 'plain' (default: white buttons, for a light background)
+//             'media' (frosted-glass buttons, for a dark background such as
+//                      the hero, where the row sits on top of a picture)
 // ==========================================================================
 import { links } from '../site';
 import { t } from '../i18n/index';
 
 interface Props {
 	size?: 'sm' | 'md';
+	variant?: 'plain' | 'media';
 }
 
-const { size = 'md' } = Astro.props;
+const { size = 'md', variant = 'plain' } = Astro.props;
 
 /** External links open in a new tab, internal ones (like /cv) do not. */
 function isExternal(href: string) {
@@ -35,7 +39,7 @@ function isExternal(href: string) {
 }
 ---
 
-<ul class:list={['links', `links--${size}`]}>
+<ul class:list={['links', `links--${size}`, `links--${variant}`]}>
 	{
 		links.map((link) => (
 			<li>
@@ -148,27 +152,28 @@ function isExternal(href: string) {
 		display: flex;
 		align-items: center;
 		gap: 8px;
-		border: 1px solid #e2dcf0;
-		border-radius: 4px;
-		background: #fff;
-		color: #333;
+		border: 1px solid var(--c-border-strong);
+		border-radius: var(--r-sm);
+		background: var(--c-surface);
+		color: var(--c-text);
 		text-decoration: none;
 		transition:
 			border-color 0.15s ease,
-			color 0.15s ease;
+			color 0.15s ease,
+			background-color 0.15s ease;
 	}
 
 	a.link:hover {
-		border-color: #7a49c5;
-		color: #7a49c5;
+		border-color: var(--c-primary);
+		color: var(--c-primary);
 	}
 
 	a.link:focus-visible {
-		outline: 2px solid #7a49c5;
+		outline: 2px solid var(--c-primary);
 		outline-offset: 2px;
 	}
 
-	/* Two sizes, so the same component works in the intro and in the footer. */
+	/* Two sizes, so the same component works in the hero and in the footer. */
 	.links--md .link {
 		padding: 9px 14px;
 	}
@@ -191,6 +196,30 @@ function isExternal(href: string) {
 		font-size: 0.85rem;
 	}
 
+	/* ==================================================================
+	   variant="media" — the same row, on top of a picture (the hero).
+	   Frosted glass instead of solid white, and white text: it stays
+	   readable whatever your screenshot looks like behind it.
+	   The colours are the `hero*` ones of src/theme.ts.
+	   ================================================================== */
+	.links--media .link {
+		border-color: var(--c-hero-border);
+		background: var(--c-hero-surface);
+		color: var(--c-hero-text);
+		backdrop-filter: blur(8px);
+	}
+
+	.links--media a.link:hover {
+		border-color: var(--c-hero-text);
+		background: var(--c-hero-surface-hover);
+		color: var(--c-hero-text);
+	}
+
+	/* On a dark background the focus ring must be white to stay visible. */
+	.links--media a.link:focus-visible {
+		outline-color: var(--c-hero-text);
+	}
+
 	.icon {
 		flex: 0 0 auto;
 		/* Icons use currentColor, so they follow the text colour on hover. */
@@ -210,20 +239,20 @@ function isExternal(href: string) {
 		height: 24px;
 		margin-left: 2px;
 		padding: 0;
-		border: 1px solid #e2dcf0;
-		border-radius: 3px;
-		background: #f9f6fc;
-		color: #6b6478;
+		border: 1px solid var(--c-border-strong);
+		border-radius: var(--r-xs);
+		background: var(--c-tint);
+		color: var(--c-text-muted);
 		cursor: pointer;
 	}
 
 	.copy-btn:hover {
-		border-color: #7a49c5;
-		color: #7a49c5;
+		border-color: var(--c-primary);
+		color: var(--c-primary);
 	}
 
 	.copy-btn:focus-visible {
-		outline: 2px solid #7a49c5;
+		outline: 2px solid var(--c-primary);
 		outline-offset: 2px;
 	}
 
@@ -237,9 +266,9 @@ function isExternal(href: string) {
 		display: none;
 	}
 	.copy-btn.is-copied {
-		color: #4a9d5f;
-		border-color: #bfe0c7;
-		background: #f2faf4;
+		color: var(--c-success);
+		border-color: var(--c-success-border);
+		background: var(--c-success-bg);
 	}
 	.copy-btn.is-copied .icon-copy {
 		display: none;

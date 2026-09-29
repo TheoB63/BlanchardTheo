@@ -32,10 +32,10 @@ import { languages, t } from '../i18n/index';
 <style>
 	.lang-switch {
 		display: inline-flex;
-		border: 1px solid #d8cfe8;
-		border-radius: 4px;
+		border: 1px solid var(--c-border-accent);
+		border-radius: var(--r-sm);
 		overflow: hidden;
-		background: #fff;
+		background: var(--c-surface);
 	}
 
 	.lang-btn {
@@ -45,27 +45,27 @@ import { languages, t } from '../i18n/index';
 		padding: 3px 9px;
 		border: 0;
 		background: transparent;
-		color: #6b6478;
+		color: var(--c-text-muted);
 		cursor: pointer;
 	}
 
 	.lang-btn + .lang-btn {
-		border-left: 1px solid #d8cfe8;
+		border-left: 1px solid var(--c-border-accent);
 	}
 
 	.lang-btn:hover {
-		color: #7a49c5;
+		color: var(--c-primary);
 	}
 
 	/* The active language, set by i18n.js */
 	.lang-btn.is-active {
-		background: #7a49c5;
-		color: #fff;
+		background: var(--c-primary);
+		color: var(--c-surface);
 	}
 
 	/* Keyboard focus must stay visible */
 	.lang-btn:focus-visible {
-		outline: 2px solid #7a49c5;
+		outline: 2px solid var(--c-primary);
 		outline-offset: -2px;
 	}
 </style>

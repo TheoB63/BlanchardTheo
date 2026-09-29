@@ -103,15 +103,15 @@ const alt = alt_en || alt_fr || title_en;
 
 <style>
 	.card {
-		background: #fff;
-		border: 1px solid #e6e0f2;
-		border-radius: 4px;
+		background: var(--c-surface);
+		border: 1px solid var(--c-border);
+		border-radius: var(--r-sm);
 		overflow: hidden;
 		height: 100%;
 	}
 
 	.card:hover {
-		border-color: #c9b8e8;
+		border-color: var(--c-accent-soft-2);
 	}
 
 	/* One link wraps the whole card: bigger click target, no nested links. */
@@ -124,7 +124,7 @@ const alt = alt_en || alt_fr || title_en;
 	}
 
 	.card-link:focus-visible {
-		outline: 2px solid #7a49c5;
+		outline: 2px solid var(--c-primary);
 		outline-offset: 2px;
 	}
 
@@ -132,8 +132,8 @@ const alt = alt_en || alt_fr || title_en;
 	.card-media {
 		/* Every card has the same shape, whatever the size of your screenshot. */
 		aspect-ratio: 16 / 10;
-		background: #f9f6fc;
-		border-bottom: 1px solid #e6e0f2;
+		background: var(--c-tint);
+		border-bottom: 1px solid var(--c-border);
 		overflow: hidden;
 	}
 
@@ -148,7 +148,7 @@ const alt = alt_en || alt_fr || title_en;
 		align-items: center;
 		justify-content: center;
 		height: 100%;
-		color: #a9a2b8;
+		color: var(--c-text-faint);
 		font-size: 0.85rem;
 	}
 
@@ -172,7 +172,7 @@ const alt = alt_en || alt_fr || title_en;
 		margin: 0;
 		font-size: 0.95rem;
 		font-weight: 300;
-		color: #6b6478;
+		color: var(--c-text-muted);
 		line-height: 1.5;
 		/* Three lines max, so the cards of the rail stay aligned. */
 		display: -webkit-box;
@@ -182,7 +182,7 @@ const alt = alt_en || alt_fr || title_en;
 		overflow: hidden;
 	}
 
-	/* --- Tags: SQUARE chips (border-radius: 3px, not pills) -------------- */
+	/* --- Tags: SQUARE chips (border-radius: var(--r-xs), not pills) -------------- */
 	.tags {
 		list-style: none;
 		margin: auto 0 0; /* pushed to the bottom of the card */
@@ -198,10 +198,10 @@ const alt = alt_en || alt_fr || title_en;
 	.tag {
 		display: inline-block;
 		padding: 3px 8px;
-		border: 1px solid #e0d8ef;
-		border-radius: 3px;
-		background: #f9f6fc;
-		color: #6b6478;
+		border: 1px solid var(--c-border-accent);
+		border-radius: var(--r-xs);
+		background: var(--c-tint);
+		color: var(--c-text-muted);
 		font-size: 0.78rem;
 		line-height: 1.4;
 	}

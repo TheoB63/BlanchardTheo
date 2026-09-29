@@ -1,116 +1,560 @@
 ---
 // ==========================================================================
-// Hero.astro — the top zone of the home page.
+// Hero.astro — the FIRST screen of the one-page site.
 // --------------------------------------------------------------------------
-// It contains:
-//   1. the image zone  (drop your own image, see src/site.ts)
-//   2. your name
-//   3. a short subtitle, in both languages
-//   4. the row of links  (SocialLinks.astro, the reusable component)
+// WHAT YOU SEE
+//   1. a full-screen background made of your pictures / GIFs / videos, which
+//      fades from one to the next every `hero.intervalMs` milliseconds
+//   2. on top of it: your name, your subtitle, two buttons and your
+//      coordinates (GitHub, LinkedIn, mail, phone, CV), drawn inside a dark
+//      veil so the text is always readable whatever the picture behind it
+//   3. one dot per slide (click to jump to a picture) and an arrow that
+//      scrolls down to the next section
 //
-// Everything that can change is in src/site.ts: siteName, heroSubtitle,
-// heroImage, socialLinks. This file is only the layout.
+// WHERE TO CHANGE THINGS
+//   - which media, and how fast they cycle : src/site.ts -> `hero`
+//   - the colours, the veil, the height     : src/theme.ts -> `colors` / `hero`
+//   - the name and the subtitle             : src/site.ts  -> `siteName`,
+//                                             `heroSubtitle`
+//
+// HOW THE CYCLING WORKS (the interesting part)
+//   All the slides are written in the HTML, stacked on each other with
+//   `position: absolute` and `opacity: 0`. Only one carries the class
+//   `.is-active` (`opacity: 1`). The small script at the bottom of this file
+//   simply moves that class from one slide to the next: the fade you see is
+//   the CSS `transition: opacity ...` on `.hero-slide`.
+//   No library, no framework, ~40 lines.
+//
+// WITHOUT JAVASCRIPT the first slide stays visible and the links work: the
+// page is never broken.
 // ==========================================================================
-import SocialLinks from './SocialLinks.astro';
-import { siteName, heroSubtitle, heroImage, heroImageHint } from '../site';
+import LinkBar from './LinkBar.astro';
+import { siteName, heroSubtitle, hero } from '../site';
 
-// `heroImage` is `null` until you add a file (see the comment in src/site.ts).
-// An imported image is an object with .src / .width / .height.
-const img = heroImage as { src: string; width?: number; height?: number } | null;
+// --- 1. Read the list of slides (src/site.ts -> hero.slides) --------------
+// A slide is either a simple path ('/hero/shot.jpg', served from public/) or
+// an image imported from src/assets/ (an object with a `.src`). Here we turn
+// both forms into one small object the template can use.
+const VIDEO = /\.(mp4|webm|ogv|ogg|mov|m4v)(\?.*)?$/i;
+
+// `filter` first: an empty entry (a commented picture, a missing import) is
+// skipped instead of breaking the page.
+const slides = hero.slides
+	.filter((slide): slide is string | { src: string } => Boolean(slide))
+	.map((slide, index) => {
+		const src = typeof slide === 'string' ? slide : slide.src;
+		return {
+			src,
+			isVideo: VIDEO.test(src),
+			isFirst: index === 0,
+		};
+	});
+
+const hasMedia = slides.length > 0;
+const buttons = hero.buttons ?? [];
+
+// The CSS variables written on the section below. They come from src/site.ts,
+// so the fade and the zoom always match the delay between two slides.
+const heroVars = [
+	`--hero-fade: ${hero.transitionMs}ms`,
+	`--hero-zoom-time: ${hero.intervalMs + hero.transitionMs}ms`,
+].join('; ');
 ---
 
-<section class="hero">
-	<!-- 1. The image zone ------------------------------------------------ -->
-	<div class="hero-media">
+<section
+	id="home"
+	class:list={['hero', !hasMedia && 'hero--no-media']}
+	data-hero
+	data-interval={hero.intervalMs}
+	style={heroVars}
+>
+	<!-- 1. THE BACKGROUND --------------------------------------------------
+	     aria-hidden: it is decoration, not content. Screen readers jump
+	     straight to your name and your coordinates below. -->
+	<div class="hero-media" aria-hidden="true">
 		{
-			img ? (
-				<img src={img.src} width={img.width} height={img.height} alt={siteName} />
-			) : (
-				// Placeholder shown while heroImage is null. It explains what to do,
-				// in both languages, so the page is never empty or broken.
-				<div class="hero-placeholder">
-					<span lang="fr">{heroImageHint.fr}</span>
-					<span lang="en">{heroImageHint.en}</span>
+			slides.map((slide) =>
+				slide.isVideo ? (
+					// Videos are MUTED and loop: browsers refuse to autoplay a
+					// video with sound. The script starts the visible one and
+					// pauses the others, so three videos never play at once.
+					<video
+						class:list={['hero-slide', 'hero-slide--video', slide.isFirst && 'is-active']}
+						data-slide
+						src={slide.src}
+						muted
+						loop
+						playsinline
+						preload={slide.isFirst ? 'auto' : 'metadata'}
+					/>
+				) : (
+					<img
+						class:list={['hero-slide', slide.isFirst && 'is-active']}
+						data-slide
+						src={slide.src}
+						alt=""
+						decoding="async"
+						loading={slide.isFirst ? 'eager' : 'lazy'}
+						fetchpriority={slide.isFirst ? 'high' : undefined}
+					/>
+				),
+			)
+		}
+
+		<!-- The veil: a dark layer between your media and your text. Its opacity
+		     is `colors.heroVeil` in src/theme.ts (lower it to show more of the
+		     picture, raise it for a more readable text). -->
+		<div class="hero-veil"></div>
+	</div>
+
+	<!-- 2. THE TEXT -------------------------------------------------------- -->
+	<div class="hero-content">
+		<h1 class="hero-name">{siteName}</h1>
+
+		<p class="hero-subtitle">
+			<span lang="fr">{heroSubtitle.fr}</span>
+			<span lang="en">{heroSubtitle.en}</span>
+		</p>
+
+		<!-- The buttons come from `hero.buttons` in src/site.ts:
+		     add, remove or reword one line there and it changes here. -->
+		{
+			buttons.length > 0 && (
+				<p class="hero-ctas">
+					{buttons.map((button) => (
+						<a
+							class:list={['hero-cta', `hero-cta--${button.style ?? 'solid'}`]}
+							href={button.href}
+						>
+							<span lang="fr">{button.label.fr}</span>
+							<span lang="en">{button.label.en}</span>
+						</a>
+					))}
+				</p>
+			)
+		}
+
+		<!-- 3. THE COORDINATES ---------------------------------------------
+		     The same reusable row as the about section and the footer. The
+		     list itself is built in src/site.ts from the `contact` block.
+		     `variant="media"` is what makes it readable on a picture: a
+		     frosted-glass background instead of the usual white one. -->
+		<div class="hero-links">
+			<LinkBar size="md" variant="media" />
+		</div>
+	</div>
+
+	<!-- 4. THE BOTTOM OF THE HERO: dots + scroll arrow ---------------------- -->
+	<div class="hero-bottom">
+		{
+			hero.dots && slides.length > 1 && (
+				<div class="hero-dots" data-i18n-aria="hero.slideGroup">
+					{slides.map((slide, index) => (
+						<button
+							type="button"
+							class:list={['hero-dot', slide.isFirst && 'is-active']}
+							data-hero-dot
+							aria-label={`${index + 1} / ${slides.length}`}
+							aria-current={slide.isFirst ? 'true' : 'false'}
+						/>
+					))}
 				</div>
 			)
 		}
-	</div>
 
-	<!-- 2 + 3. Name and subtitle ---------------------------------------- -->
-	<h2 class="hero-name">{siteName}</h2>
-
-	<p class="hero-subtitle">
-		<span lang="fr">{heroSubtitle.fr}</span>
-		<span lang="en">{heroSubtitle.en}</span>
-	</p>
-
-	<!-- 4. The reusable row of links ------------------------------------ -->
-	<div class="hero-links">
-		<SocialLinks size="md" />
+		{
+			hero.scrollCue && (
+				<a class="hero-cue" href="#about" data-i18n-aria="hero.scrollDown">
+					<svg viewBox="0 0 24 24" aria-hidden="true">
+						<path d="M12 5v14M6 13l6 6 6-6" />
+					</svg>
+				</a>
+			)
+		}
 	</div>
 </section>
 
+<script>
+	// ======================================================================
+	// The slideshow. Plain JavaScript, no library.
+	// Astro bundles this file once, and only sends it to the browser.
+	// ======================================================================
+
+	/** True when the visitor asked the system to reduce animations. */
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	document.querySelectorAll<HTMLElement>('[data-hero]').forEach((hero) => {
+		const slides = Array.from(hero.querySelectorAll<HTMLImageElement | HTMLVideoElement>('[data-slide]'));
+		const dots = Array.from(hero.querySelectorAll<HTMLButtonElement>('[data-hero-dot]'));
+		if (slides.length === 0) return;
+
+		/** Delay between two slides, read from the data-interval attribute
+		 *  (written by the template from `hero.intervalMs` in src/site.ts). */
+		const interval = Number(hero.dataset.interval ?? 6000);
+
+		let current = 0;
+		let timer: number | undefined;
+
+		/** Show slide `index` (wrapping around the ends) and hide the others. */
+		function show(index: number) {
+			current = (index + slides.length) % slides.length;
+
+			slides.forEach((slide, i) => {
+				const active = i === current;
+				slide.classList.toggle('is-active', active);
+
+				// A video only plays while it is the visible slide. Three
+				// videos playing at once would eat the battery for nothing.
+				if (slide instanceof HTMLVideoElement) {
+					if (active) {
+						slide.currentTime = 0;
+						// `play()` returns a promise that is rejected when the
+						// browser blocks autoplay: we simply ignore it, the
+						// picture (a video shows its first frame) still shows.
+						void slide.play().catch(() => {});
+					} else {
+						slide.pause();
+					}
+				}
+			});
+
+			dots.forEach((dot, i) => {
+				dot.classList.toggle('is-active', i === current);
+				dot.setAttribute('aria-current', i === current ? 'true' : 'false');
+			});
+		}
+
+		/** How long the current slide stays on screen.
+		 *  A video imposes its own length (its real duration), an image uses
+		 *  the delay from src/site.ts. */
+		function holdFor(index: number) {
+			const slide = slides[index];
+			if (slide instanceof HTMLVideoElement && Number.isFinite(slide.duration) && slide.duration > 0.5) {
+				return slide.duration * 1000;
+			}
+			return interval;
+		}
+
+		/** Restart the countdown for the slide currently on screen. */
+		function schedule() {
+			window.clearTimeout(timer);
+			timer = window.setTimeout(() => {
+				show(current + 1);
+				schedule();
+			}, holdFor(current));
+		}
+
+		function stop() {
+			window.clearTimeout(timer);
+		}
+
+		/** Autoplay only if there is something to cycle through, and only if
+		 *  the visitor allows animations. Otherwise the dots still work. */
+		function start() {
+			if (slides.length > 1 && !reduceMotion && !document.hidden) schedule();
+		}
+
+		// --- Manual control: the dots -------------------------------------
+		dots.forEach((dot, i) => {
+			dot.addEventListener('click', () => {
+				show(i);
+				schedule(); // clicking also restarts the countdown
+			});
+		});
+
+		// --- Nothing runs in a hidden tab ---------------------------------
+		document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+
+		// --- Optional: pause while the mouse hovers the hero ----------------
+		// The hero fills the screen, so this would also stop the slideshow
+		// while you simply read it. Uncomment the two lines to try:
+		// hero.addEventListener('pointerenter', stop);
+		// hero.addEventListener('pointerleave', start);
+
+		// --- Boot ----------------------------------------------------------
+		show(0);
+		start();
+	});
+</script>
+
 <style>
+	/* ==================================================================
+	   The section itself: it takes the whole screen (minus the sticky
+	   header, whose height is --header-h), and centres its content.
+	   ================================================================== */
 	.hero {
-		text-align: center;
-		padding: 10px 0 30px;
-	}
-
-	/* --- Image zone ----------------------------------------------------- */
-	.hero-media {
-		margin: 0 auto 26px;
-		max-width: 720px;
-	}
-
-	.hero-media img {
-		display: block;
-		width: 100%;
-		height: auto;
-		border: 1px solid #e6e0f2;
-		border-radius: 4px;
-	}
-
-	/* The dashed box you see before adding an image. */
-	.hero-placeholder {
+		position: relative;
+		/* `isolation` creates a small stacking context, which is what lets the
+		   background sit at z-index -1: behind the text, but in front of the
+		   section's own background colour. */
+		isolation: isolate;
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		min-height: 220px;
-		padding: 20px;
-		border: 1px dashed #cfc5e2;
-		border-radius: 4px;
-		background: #fbfaff;
-		color: #8a8398;
-		font-size: 0.95rem;
-		line-height: 1.5;
+		/* `box-sizing` matters here: with it, `min-height` INCLUDES the padding
+		   below, so the hero really measures one screen and the dots at the
+		   bottom are never pushed below the fold.
+
+		   The height is `min(one screen, the limit in src/theme.ts)`:
+		     - on a normal screen, 92vh  -> the hero fills the view
+		     - on a very tall screen, the limit (980px) -> it stays a hero and
+		       does not become a whole empty page
+		   `min-height` (not `height`) so the text is never cut if it needs
+		   more room — a longer subtitle, a third button, a small phone. */
+		box-sizing: border-box;
+		min-height: min(calc(var(--hero-min-h) - var(--header-h)), var(--hero-max-h));
+		padding: 80px 20px 96px;
+		overflow: hidden;
+		text-align: center;
+		color: var(--c-hero-text);
+		/* Used when `hero.slides` is empty: a purple gradient (see theme.ts). */
+		background: var(--c-hero-fallback);
 	}
 
-	/* --- Text ------------------------------------------------------------ */
+	/* --- 1. The background --------------------------------------------- */
+	.hero-media {
+		position: absolute;
+		inset: 0;
+		z-index: -1; /* behind the text, above the gradient */
+	}
+
+	.hero-slide {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover; /* fills the screen, crops what does not fit */
+		opacity: 0;
+		/* The fade: this single line is what makes the slideshow look smooth.
+		   --hero-fade comes from `hero.transitionMs` in src/site.ts. */
+		transition:
+			opacity var(--hero-fade, 1400ms) ease,
+			transform var(--hero-zoom-time, 9s) linear;
+	}
+
+	/* The visible slide. */
+	.hero-slide.is-active {
+		opacity: 1;
+	}
+
+	/* A very slow zoom on the pictures only (a zoomed video is blurry). */
+	img.hero-slide.is-active {
+		transform: scale(var(--hero-zoom, 1.06));
+	}
+
+	/* Accessibility: no fade, no zoom, for someone who asked for calm. */
+	@media (prefers-reduced-motion: reduce) {
+		.hero-slide {
+			transition-duration: 1ms;
+		}
+		img.hero-slide.is-active {
+			transform: none;
+		}
+	}
+
+	/* The veil between the media and the text. `colors.heroVeil` in theme.ts. */
+	.hero-veil {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			180deg,
+			var(--c-hero-veil-edge) 0%,
+			var(--c-hero-veil) 26%,
+			var(--c-hero-veil) 74%,
+			var(--c-hero-veil-edge) 100%
+		);
+	}
+
+	/* When there is no media at all, the gradient is already dark: no veil. */
+	.hero--no-media .hero-veil {
+		display: none;
+	}
+
+	/* --- 2. The text ---------------------------------------------------- */
+	.hero-content {
+		position: relative;
+		width: 100%;
+		max-width: 900px;
+	}
+
 	.hero-name {
 		margin: 0;
-		font-size: 2.4em;
+		font-size: clamp(2.1rem, 6vw, 4rem);
 		font-weight: 700;
-		letter-spacing: -0.01em;
+		letter-spacing: -0.02em;
+		line-height: 1.05;
+		/* Keeps the name readable on a bright screenshot. */
+		text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
 	}
 
 	.hero-subtitle {
-		margin: 8px 0 0;
-		font-size: 1.15em;
+		margin: 14px 0 0;
+		font-size: clamp(1rem, 1.6vw, 1.25rem);
 		font-weight: 300;
-		color: #6b6478;
+		color: var(--c-hero-text-muted);
 	}
 
-	/* --- Links ----------------------------------------------------------- */
+	/* --- The two buttons ------------------------------------------------- */
+	.hero-ctas {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 12px;
+		margin: 28px 0 0;
+	}
+
+	.hero-cta {
+		display: inline-block;
+		padding: 10px 20px;
+		border: 1px solid transparent;
+		border-radius: var(--r-btn);
+		font-size: 1rem;
+		text-decoration: none;
+		transition:
+			background-color 0.15s ease,
+			border-color 0.15s ease,
+			color 0.15s ease;
+	}
+
+	.hero-cta--solid {
+		background: var(--c-primary);
+		color: var(--c-on-primary);
+	}
+
+	.hero-cta--solid:hover {
+		background: var(--c-primary-hover);
+	}
+
+	.hero-cta--ghost {
+		border-color: var(--c-hero-border);
+		background: var(--c-hero-surface);
+		color: var(--c-hero-text);
+		backdrop-filter: blur(6px);
+	}
+
+	.hero-cta--ghost:hover {
+		background: var(--c-hero-surface-hover);
+	}
+
+	.hero-cta:focus-visible {
+		outline: 2px solid var(--c-hero-text);
+		outline-offset: 2px;
+	}
+
+	/* --- 3. The row of links --------------------------------------------- */
 	.hero-links {
-		margin-top: 22px;
 		display: flex;
 		justify-content: center;
+		margin-top: 30px;
 	}
 
-	/* The two languages are written one after the other; only one is shown
-	   (rule defined in BaseLayout.astro). Inline so the line stays tidy. */
-	.hero-placeholder span,
-	.hero-subtitle span {
+	/* --- 4. Dots + scroll arrow ------------------------------------------ */
+	.hero-bottom {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 24px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 14px;
+	}
+
+	.hero-dots {
+		display: flex;
+		gap: 8px;
+	}
+
+	.hero-dot {
+		width: 9px;
+		height: 9px;
+		padding: 0;
+		border: 1px solid var(--c-hero-border);
+		border-radius: 50%;
+		background: var(--c-hero-surface);
+		cursor: pointer;
+		transition:
+			background-color 0.15s ease,
+			transform 0.15s ease;
+	}
+
+	.hero-dot:hover {
+		background: var(--c-hero-surface-hover);
+	}
+
+	.hero-dot.is-active {
+		background: var(--c-hero-text);
+		transform: scale(1.25);
+	}
+
+	.hero-dot:focus-visible {
+		outline: 2px solid var(--c-hero-text);
+		outline-offset: 2px;
+	}
+
+	.hero-cue {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 38px;
+		height: 38px;
+		border: 1px solid var(--c-hero-border);
+		border-radius: 50%;
+		color: var(--c-hero-text);
+		animation: cue 2.4s ease-in-out infinite;
+	}
+
+	.hero-cue svg {
+		width: 18px;
+		height: 18px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.hero-cue:hover {
+		background: var(--c-hero-surface-hover);
+	}
+
+	@keyframes cue {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(5px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-cue {
+			animation: none;
+		}
+	}
+
+	/* --- Small screens ---------------------------------------------------- */
+	@media (max-width: 640px) {
+		.hero {
+			padding: 56px 16px 92px;
+			/* On a phone the address bar eats part of the screen: use the small
+			   viewport unit (svh) so the hero fits whatever happens — and keep
+			   the same ceiling as on the desktop, so a very tall narrow window
+			   cannot turn the hero into a full empty page. */
+			min-height: min(calc(100svh - var(--header-h)), var(--hero-max-h));
+		}
+		/* The row of links becomes a bit denser so it still fits in one block. */
+		.hero-links {
+			margin-top: 24px;
+		}
+	}
+
+	/* Both languages are always in the HTML and only one is shown (rule in
+	   BaseLayout.astro), so they must stay inline. */
+	.hero-subtitle span,
+	.hero-cta span {
 		display: inline;
 	}
 </style>
