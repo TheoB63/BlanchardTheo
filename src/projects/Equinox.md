@@ -1,27 +1,25 @@
 ---
-# Second example project. Copy this file to create your own:
-# rename it, change the frontmatter, write the body. That is all.
+title_fr: Moteur Equinox
+title_en: Equinox Engine
 
-title_fr: Éditeur de niveaux
-title_en: Level editor
+summary_fr: Moteur de jeu en C++, fonctionnant avec Vulkan et OpenGL.
+summary_en: A C++ Game Engine, working with Vulkan and OpenGL.
 
-summary_fr: Un éditeur de niveaux 2D en C# et Unity, avec export binaire et validation, pour que les level designers n'aient plus jamais à me demander un changement.
-summary_en: A 2D level editor in C# and Unity, with binary export and validation, so level designers never had to ask me for a change again.
+alt_fr: _
+alt_en: _
 
-alt_fr: L'éditeur avec ses trois panneaux et un chemin de navigation.
-alt_en: The editor with its three panels and a navigation path.
+image: ./Equinox/EquinoxIcon.png
 
-image: ./level-editor.jpg
+tags: [c++, OpenGL, Vulkan]
 
-tags: [csharp, unity, tools]
+date: 2026-06-01
 
-date: 2025-07-10
-
-repo: https://github.com/your-username/level-editor
+repo: https://github.com/TheoB63
 ---
 
-<!-- lang:fr -->
+![image](./Equinox/EquinoxEditor.png)
 
+<!-- lang:fr -->
 ## Le contexte
 
 Les niveaux étaient dessinés dans un outil externe, puis recopiés à la main dans
