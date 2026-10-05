@@ -1,21 +1,18 @@
 ---
-# Second example project. Copy this file to create your own:
-# rename it, change the frontmatter, write the body. That is all.
+title_fr: Fish N' Ship
+title_en: Fish N' Ship
 
-title_fr: Éditeur de niveaux
-title_en: Level editor
-
-summary_fr: Un éditeur de niveaux 2D en C# et Unity, avec export binaire et validation, pour que les level designers n'aient plus jamais à me demander un changement.
-summary_en: A 2D level editor in C# and Unity, with binary export and validation, so level designers never had to ask me for a change again.
+summary_fr: Jeux de type friend slop, ayant pour objectif la navigation, l'exploration et la construction de son bateau.
+summary_en: Games in the friend slop genre, where the aim is to sail, explore and build your own boat.
 
 alt_fr: L'éditeur avec ses trois panneaux et un chemin de navigation.
 alt_en: The editor with its three panels and a navigation path.
 
-image: ./level-editor.jpg
+image: ./FishNShip/FishNShipIcon.png
 
-tags: [csharp, unity, tools]
+tags: [csharp, unity]
 
-date: 2024-01-10
+date: 2026-01-01
 
 repo: https://github.com/your-username/level-editor
 ---
