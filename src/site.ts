@@ -74,11 +74,17 @@ export const hero = {
 	 * block is the only place you have to list them.
 	 */
 	slides: [
-		'/hero/demo-1.jpg', // a file from public/hero/
-		'/hero/demo-2.jpg',
-		'/hero/demo-3.jpg',
-		'/hero/demo-4.mp4',
-		'/hero/demo-5.gif',
+		// '/hero/demo-1.jpg', // a file from public/hero/
+		// '/hero/demo-2.jpg',
+		// '/hero/demo-3.jpg',
+		// '/hero/demo-4.mp4',
+		// '/hero/demo-5.gif',
+		'/hero/EquinoxIcon.jpg',
+		'/hero/FishNShipIcon.jpg',
+		'/hero/GodbreakIcon.jpg',
+		'/hero/PulseIcon.jpg',
+		'/hero/TDIcon.jpg',
+		'/hero/EquinoxEditor.jpg',
 
 		// Your own pictures: put the file in public/hero/ and write its address.
 		// '/hero/screenshot.jpg',
