@@ -10,7 +10,7 @@ alt_en: The editor with its three panels and a navigation path.
 
 image: ./FishNShip/FishNShipIcon.png
 
-tags: [csharp, unity]
+tags: [C#, Unity, Online]
 
 date: 2026-01-01
 

@@ -13,7 +13,7 @@ alt_en: The editor with its three panels and a navigation path.
 
 image: ./Godbreak/GodbreakIcon.png
 
-tags: [C++, SFML, tools]
+tags: [C++, SFML, Tools]
 
 date: 2025-01-01
 

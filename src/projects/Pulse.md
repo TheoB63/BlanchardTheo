@@ -13,7 +13,7 @@ alt_en: The editor with its three panels and a navigation path.
 
 image: ./Pulse/PulseIcon.png
 
-tags: [csharp, unity, tools]
+tags: [C#, Unity, Tools]
 
 date: 2025-09-01
 

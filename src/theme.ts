@@ -77,13 +77,13 @@ export const theme = {
 		heroTextMuted: 'rgba(255, 255, 255, 0.80)',
 		// `heroVeil` is laid over the pictures. Raise the last number (0 to 1)
 		// for a darker, more readable hero; lower it to show more of the media.
-		heroVeil: '#100a1c8f',
+		heroVeil: 'rgba(16, 10, 28, 0.56)',
 		// A slightly stronger veil at the top and bottom, where the header and
 		// the scroll cue sit.
 		heroVeilEdge: 'rgba(16, 10, 28, 0.35)',
 		// The "glass" links and dots of the hero.
-		heroSurface: '#ffffff1a',
-		heroSurfaceHover: '#ffffff38',
+		heroSurface: 'rgba(255, 255, 255, 0.1)',
+		heroSurfaceHover: 'rgba(255, 255, 255, 0.22)',
 		heroBorder: 'rgba(255, 255, 255, 0.30)',
 		// Shown behind the text when there is NO picture at all (see
 		// `hero.slides` in src/site.ts): a soft purple gradient.

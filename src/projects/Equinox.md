@@ -10,7 +10,7 @@ alt_en: _
 
 image: ./Equinox/EquinoxIcon.png
 
-tags: [c++, OpenGL, Vulkan]
+tags: [C++, OpenGL, Vulkan]
 
 date: 2026-06-01
 

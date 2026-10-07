@@ -28,7 +28,7 @@ image: ./voxel-engine.jpg
 # needs translating, add it to `tagLabels` in src/i18n/index.ts.
 tags: [cpp, opengl, cmake]
 
-date: 2024-05-20
+date: 2020-05-20
 
 repo: https://github.com/your-username/voxel-engine
 # demo: https://your-username.itch.io/voxel-engine

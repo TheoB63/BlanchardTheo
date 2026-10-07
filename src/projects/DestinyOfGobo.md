@@ -2,8 +2,8 @@
 # Second example project. Copy this file to create your own:
 # rename it, change the frontmatter, write the body. That is all.
 
-title_fr: Prototype de Tower Defense
-title_en: TowerDefensePrototype
+title_fr: DestinyOfGobo
+title_en: DestinyOfGobo
 
 summary_fr: Un éditeur de niveaux 2D en C# et Unity, avec export binaire et validation, pour que les level designers n'aient plus jamais à me demander un changement.
 summary_en: A 2D level editor in C# and Unity, with binary export and validation, so level designers never had to ask me for a change again.
@@ -11,11 +11,11 @@ summary_en: A 2D level editor in C# and Unity, with binary export and validation
 alt_fr: L'éditeur avec ses trois panneaux et un chemin de navigation.
 alt_en: The editor with its three panels and a navigation path.
 
-image: ./TowerDefense/TDIcon.png
+image: ./DestinyOfGobo/DestinyOfGoboIcon.jpg
 
-tags: [C#, Unity, Tools]
+tags: [C, CSFML]
 
-date: 2025-10-01
+date: 2024-01-01
 
 repo: https://github.com/your-username/level-editor
 ---
