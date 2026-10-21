@@ -27,54 +27,84 @@ title: CV — Blanchard Theo
 cv: true
 ---
 
+---
 <!-- lang:fr -->
 
 ## Théo Blanchard
 
-Développeur jeux vidéo — moteurs, outils, rendu.
-Marseille, France · theo.blanchard@example.com · github.com/your-username
+Programmeur Moteur et Gameplay  
+Nîmes, France · theo.blanchard63@gmail.com · 06 21 84 45 69  
+[theob63.github.io/BlanchardTheo/](https://theob63.github.io/BlanchardTheo/)
 
 ### Profil
 
-Dix ans de C++, cinq ans d’Unity. Je préfère les problèmes mesurables : un
-temps de build qui passe de 14 minutes à 90 secondes, un outil qui fait gagner
-dix minutes par jour à une équipe.
+Étudiant en 4ème et dernière année dans le développement de jeux vidéo (C/C++/C#), passionné par la programmation bas niveau et la conception de moteurs. Habitué au travail d'équipe et aux projets de groupe.
 
-### Expérience
+### Expériences
 
-**Programmeur moteur — Studio Exemple**
-*2023 — aujourd’hui*
+**Projet personnel — Equinox**
+*07/2026 — En cours*
 
-- Maintenance du renderer maison (C++/Vulkan) sur trois titres sortis.
-- Réécriture du pipeline d’assets : build divisé par neuf.
-- Overlay de profiling utilisé par toute l’équipe.
+- Création d’un moteur de jeu en C++, utilisant Vulkan et OpenGL.
 
-**Développeur outils — Petite Équipe, à distance**
-*2021 — 2023*
+**Projets de 3ème année — Fish N’Ship, Friend-Slop**
+*01/2026 — 06/2026*
 
-- Outils d’édition Unity pour les level designers.
-- Mise en place des tests sur l’outillage : deux bloqueurs de release évités.
+- Programmation et gestion d’un bateau modulaire.
+- Développement de la physique et du gameplay liés au bateau en réseau.
+- Level Building et création d’effets visuels pour l’environnement.
 
-**Freelance**
-*2019 — 2021*
+**Projets de 2ème année — Godbreak, Sandbox**
+*01/2025 — 06/2025*
 
-- Features gameplay, portages, passes de performance pour de petits studios.
+- Génération procédurale du terrain, des structures et des loots.
+- Système de construction.
+- Sauvegarde du terrain et des inventaires.
 
-### Études
+**Job d’été — Burger King, Aire des Volcans d’Auvergne**
+*06/2025 — 09/2025*
 
-**Master informatique** — Université Exemple, 2019
-Spécialité image et jeu vidéo. Projet de fin d’études : un rasteriseur logiciel.
+**Stages de première et deuxième année de BTS — Fiat Powertrain Technologies, Bourbon-Lancy**
+*06/2022 — 07/2022 & 01/2021 — 02/2021*
 
-**Licence informatique** — Université Exemple, 2017
+**Stage de terminale — Symbo, Syndicat de rivière, Saint-Jean-d’Angély**
+*04/2019 — 05/2019 & 06/2019 — 07/2019*
+
+### Formation
+
+**Préparation d’un titre RNCP de niveau 6 : Programmeur Jeux Vidéo**
+*2022 — 2027*  
+Creajeux — L'École des Métiers du Jeu Vidéo, Nîmes
+
+**BTS Moteur à Combustion Interne (MCI)**
+*2020 — 2022*  
+Lycée Isaac de l’Étoile, Poitiers
+
+**Baccalauréat STAV**
+*2017 — 2020*  
+Lycée Louis Pasteur Marmilhat, Lempdes
 
 ### Compétences
 
-C++ (17/20), C#, Lua, Python, GLSL, Unity, Unreal (notions), CMake, Git,
-Linux, Windows, profiling, écriture technique.
+- Développement orienté objet : C, C++, C#
+- Architecture et programmation moteur
+- Programmation gameplay et graphique
+- Travail en équipe et gestion de projets
+
+### Logiciels
+
+- **Moteurs :** Unreal Engine, Unity
+- **IDE :** Visual Studio, Rider
+- **Versioning :** GitHub, SVN
 
 ### Langues
 
-Français (langue maternelle), anglais (courant, C1).
+Français (langue maternelle)  
+Anglais (B1)
+
+### Centres d’intérêts
+
+Sports · Lecture · Jeux de stratégie · Jeux vidéo · Dessin
 
 <!-- /lang -->
 
@@ -82,49 +112,79 @@ Français (langue maternelle), anglais (courant, C1).
 
 ## Theo Blanchard
 
-Game developer — engines, tools, rendering.
-Marseille, France · theo.blanchard@example.com · github.com/your-username
+Engine & Gameplay Programmer  
+Nîmes, France · theo.blanchard63@gmail.com · +33 6 21 84 45 69  
+[theob63.github.io/BlanchardTheo/](https://theob63.github.io/BlanchardTheo/)
 
 ### Profile
 
-Ten years of C++, five of Unity. I like measurable problems: a build that goes
-from 14 minutes to 90 seconds, a tool that gives ten minutes back to a team
-every day.
+Fourth-year and final-year student in video game development (C/C++/C#), passionate about low-level programming and engine development. Experienced in teamwork and group projects.
 
 ### Experience
 
-**Engine programmer — Example Studio**
-*2023 — now*
+**Personal Project — Equinox**
+*07/2026 — Present*
 
-- Maintained the in-house renderer (C++/Vulkan) across three shipped titles.
-- Rewrote the asset pipeline: build times divided by nine.
-- Profiling overlay used by the whole team.
+- Developing a game engine in C++ using Vulkan and OpenGL.
 
-**Tools developer — Small Team, remote**
-*2021 — 2023*
+**Third-Year Projects — Fish N’Ship, Friend-Slop**
+*01/2026 — 06/2026*
 
-- Unity editor tooling for level designers.
-- Introduced tests on the tooling; avoided two release blockers.
+- Programming and management of a modular boat.
+- Development of networked boat-related physics and gameplay.
+- Level building and environmental visual effects.
 
-**Freelance**
-*2019 — 2021*
+**Second-Year Projects — Godbreak, Sandbox**
+*01/2025 — 06/2025*
 
-- Gameplay features, porting work and performance passes for small studios.
+- Procedural generation of terrain, structures and loot.
+- Building system.
+- Terrain and inventory saving systems.
+
+**Summer Job — Burger King, Aire des Volcans d’Auvergne**
+*06/2025 — 09/2025*
+
+**First and Second-Year BTS Internships — Fiat Powertrain Technologies, Bourbon-Lancy**
+*06/2022 — 07/2022 & 01/2021 — 02/2021*
+
+**Final-Year High School Internship — Symbo, River Syndicate, Saint-Jean-d’Angély**
+*04/2019 — 05/2019 & 06/2019 — 07/2019*
 
 ### Education
 
-**MSc Computer Science** — Example University, 2019
-Graphics and games track. Final project: a software rasteriser.
+**RNCP Level 6 Qualification in Video Game Programming**
+*2022 — 2027*  
+Creajeux — School of Video Game Professions, Nîmes
 
-**BSc Computer Science** — Example University, 2017
+**BTS Internal Combustion Engine (MCI)**
+*2020 — 2022*  
+Lycée Isaac de l’Étoile, Poitiers
+
+**STAV Baccalaureate**
+*2017 — 2020*  
+Lycée Louis Pasteur Marmilhat, Lempdes
 
 ### Skills
 
-C++ (17/20), C#, Lua, Python, GLSL, Unity, Unreal (reading level), CMake, Git,
-Linux, Windows, profiling, technical writing.
+- Object-oriented programming: C, C++, C#
+- Engine architecture and programming
+- Gameplay and graphics programming
+- Teamwork and project management
+
+### Software
+
+- **Game Engines:** Unreal Engine, Unity
+- **IDEs:** Visual Studio, Rider
+- **Version Control:** GitHub, SVN
 
 ### Languages
 
-French (native), English (fluent, C1).
+French (native)  
+English (B1)
+
+### Interests
+
+Sports · Reading · Strategy Games · Video Games · Drawing
 
 <!-- /lang -->
+---

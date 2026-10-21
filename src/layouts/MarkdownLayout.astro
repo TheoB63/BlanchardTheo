@@ -70,8 +70,9 @@ const showPdfButton = cv && Boolean(cvPdf);
 			)
 		}
 
-		<!-- The body of the markdown file. -->
-		<slot />
+		<!-- The body of the markdown file.
+		     Hidden on the CV page because the PDF is displayed above. -->
+		{!cv && <slot />}
 	</div>
 </BaseLayout>
 
