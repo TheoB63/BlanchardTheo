@@ -22,22 +22,22 @@ repo: ""
 <!-- lang:fr -->
 ## Le projet
 
-Voici un jeu d'échecs développé avec Unity en C#, avec pour objectif de reproduire une partie d'échecs complète tout en développant une intelligence artificielle capable de jouer contre le joueur.
+Voici un jeu d'échecs développé avec **Unity en C#**, avec pour objectif de reproduire une partie d'échecs complète tout en développant une intelligence artificielle capable de jouer contre le joueur.
 
-Très vite durant la creation du projet des questions sur les performance et l'optimisation du jeu se sont posé, ce qui m'a ammener a un échiquier en **bitboard**, permettant de représenter efficacement les pièces et de générer plus rapidement les différents coups possibles.
+Très vite durant la création du projet, des questions sur les performances et l'optimisation du jeu se sont posées, ce qui m'a amené à un échiquier en **bitboard**, permettant de représenter efficacement les pièces et de générer plus rapidement les différents coups possibles.
 
-L'IA a été conçue pour jouer à plusieurs niveaux de difficulté, est a réussi obtenir un niveau situé entre **1200 et 1600 Elo**.
+L'IA a été conçue pour jouer à plusieurs niveaux de difficulté et a réussi à obtenir un niveau situé entre **1200 et 1600 Elo**.
 
 Au-delà du jeu lui-même, ce projet m'a permis de mieux comprendre l'optimisation des performances et la structuration efficace des données, en particulier grâce à la génération et la recherche algorithmique de coups pour l'IA.
 <!-- /lang -->
 <!-- lang:en -->
 ## The project
 
-Here is a chess game developed using Unity and C#, with the aim of recreating a full game of chess whilst developing an artificial intelligence capable of playing against the player.
+Here is a chess game developed using **Unity and C#**, with the aim of recreating a full game of chess whilst developing an artificial intelligence capable of playing against the player.
 
-Very early on in the project’s development, questions arose regarding the game’s performance and optimisation, which led me to adopt a **bitboard** chessboard, enabling the pieces to be represented efficiently and the various possible moves to be generated more quickly.
+Very early on in the project’s development, questions arose regarding the game’s performance and optimisation, which led me to adopt a **bitboard** chessboard, enabling me to represent the pieces efficiently and generate the various possible moves more quickly.
 
-The AI was designed to play at several levels of difficulty and has achieved a rating of between **1200 and 1600 Elo**.
+The AI was designed to play at various levels of difficulty and has managed to achieve a rating of between **1200 and 1600 Elo**.
 
 Beyond the game itself, this project has given me a better understanding of performance optimisation and efficient data structuring, particularly through the generation and algorithmic search for moves for the AI.
 <!-- /lang -->
@@ -47,32 +47,20 @@ Beyond the game itself, this project has given me a better understanding of perf
 <!-- lang:fr -->
 ## L'objectif
 
-L'objectif principal était de construire un jeu d'échecs fonctionnel tout en
-essayant de conserver une architecture suffisamment performante pour permettre
-à l'IA d'analyser un grand nombre de positions.
+À l'origine, ce projet consistait en un devoir à rendre, dont l'objectif était de créer un jeu de société intégrant un algorithme min-max pour l'IA adverse. Cependant, au fil de sa conception, mon ambition a évolué, je me suis donc tourné vers l'objectif de développer un jeu fonctionnel, tout en concevant une architecture suffisamment performante pour permettre à l'IA d'analyser un grand nombre de positions et ainsi gagner en "intelligence".
 
-Les échecs sont particulièrement intéressants pour cela : les règles sont
-relativement déterministes, mais le nombre de positions possibles augmente
-très rapidement dès que plusieurs coups sont envisagés.
+Les échecs sont particulièrement intéressants pour cela : il s'agit d'un jeu offrant une grande variété de possibilités, dont les règles sont relativement déterministes. De plus, le nombre de positions possibles augmente très rapidement dès que plusieurs coups sont envisagés.
 
-J'ai donc dû faire des choix concernant la manière de représenter l'échiquier,
-de générer les coups et d'évaluer les positions afin de limiter le coût des
-calculs.
+J'ai donc dû faire des choix quant à la représentation de l'échiquier, à la génération des coups et à l'évaluation des positions, afin de limiter le coût des calculs.
 <!-- /lang -->
 <!-- lang:en -->
 ## The goal
 
-The main goal was to build a functional chess game while keeping the
-architecture efficient enough for the AI to analyze a large number of
-positions.
+Originally, this project was an assignment, the aim of which was to create a board game incorporating a min-max algorithm for the AI opponent. However, as the project progressed, my ambition evolved, so I shifted my focus to developing a fully functional chess programme, whilst designing an architecture powerful enough to enable the AI to analyse a large number of positions and thereby become more "intelligent".
 
-Chess is particularly interesting from that perspective: the rules are
-relatively deterministic, but the number of possible positions grows very
-quickly as more moves are considered.
+Chess is particularly interesting in this respect: it is a game offering a wide variety of possibilities, with rules that are relatively deterministic. Furthermore, the number of possible positions increases very rapidly as soon as several moves are considered.
 
-I therefore had to make decisions about how to represent the board, generate
-moves and evaluate positions in order to keep the computational cost under
-control.
+I therefore had to make some choices regarding the representation of the chessboard, the generation of moves and the evaluation of positions, in order to minimise the computational cost.
 <!-- /lang -->
 <!--==================================================
   Bitboard Representation
@@ -80,30 +68,37 @@ control.
 <!-- lang:fr -->
 ## La représentation en bitboard
 
-L'échiquier est représenté à l'aide de plusieurs **bitboards**.
+L'échiquier est représenté au moyen de plusieurs **bitboards**.
 
-Un bitboard est un entier dont chaque bit correspond à une case de l'échiquier.
-Avec un échiquier de 64 cases, un entier de 64 bits permet donc de représenter
-directement l'occupation d'un ensemble de cases.
+Un bitboard est un entier dont chaque bit correspond à une case de l'échiquier. Avec un échiquier de 64 cases, un entier de 64 bits permet de représenter directement l'occupation d'un ensemble de cases.
 
-Cette représentation permet notamment de manipuler plusieurs cases en une
-seule opération binaire.
+Cette structure permet notamment de manipuler plusieurs cases en une seule opération binaire.
 
-Les bitboards peuvent par exemple être utilisés pour représenter les cases
-occupées par les pièces blanches, les pièces noires, ou encore les positions
-d'un type de pièce particulier.
+Les bitboards peuvent servir à représenter les cases occupées par les pièces blanches, les pièces noires, ou encore les positions d'un type de pièce spécifique.
 
+Création du bitboard en code :
 ```csharp
-// Exemple simplifié
-ulong whitePieces;
-ulong blackPieces;
+public ulong WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing;
+public ulong WhitePieces => WhitePawn | WhiteKnight | WhiteBishop | WhiteRook | WhiteQueen | WhiteKing;
 
-ulong whitePawns;
-ulong whiteKnights;
-ulong whiteBishops;
-ulong whiteRooks;
-ulong whiteQueens;
-ulong whiteKing;
+public ulong BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing;
+public ulong BlackPieces => BlackPawn | BlackKnight | BlackBishop | BlackRook | BlackQueen | BlackKing;
+
+public ulong AllPieces => WhitePieces | BlackPieces;
+
+WhitePawn = 0x000000000000FF00UL;
+WhiteRook = 0x0000000000000081UL;
+WhiteKnight = 0x0000000000000042UL;
+WhiteBishop = 0x0000000000000024UL;
+WhiteQueen = 0x0000000000000008UL;
+WhiteKing = 0x0000000000000010UL;
+
+BlackPawn = 0x00FF000000000000UL;
+BlackRook = 0x8100000000000000UL;
+BlackKnight = 0x4200000000000000UL;
+BlackBishop = 0x2400000000000000UL;
+BlackQueen = 0x0800000000000000UL;
+BlackKing = 0x1000000000000000UL;
 ```
 Cette approche évite de devoir parcourir systématiquement les 64 cases de
 l'échiquier pour effectuer certaines opérations.
@@ -111,7 +106,51 @@ l'échiquier pour effectuer certaines opérations.
 Elle est particulièrement intéressante dans le cas de l'IA, puisque la même
 position peut être analysée un très grand nombre de fois pendant la recherche
 d'un coup.
+<!-- /lang -->
+<!-- lang:en -->
+## Bitboard representation
+The chessboard is represented using several **bitboards**.
 
+A bitboard is an integer in which each bit corresponds to a square on the chessboard. With a 64-square chessboard, a 64-bit integer can be used to directly represent the occupancy of a set of squares.
+
+This structure makes it possible, in particular, to manipulate several squares in a single binary operation.
+
+Bitboards can be used to represent the squares occupied by white pieces, black pieces, or even the positions of a specific type of piece.
+
+Creating the bitboard in code:
+```csharp
+public ulong WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing;
+public ulong WhitePieces => WhitePawn | WhiteKnight | WhiteBishop | WhiteRook | WhiteQueen | WhiteKing;
+
+public ulong BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing;
+public ulong BlackPieces => BlackPawn | BlackKnight | BlackBishop | BlackRook | BlackQueen | BlackKing;
+
+public ulong AllPieces => WhitePieces | BlackPieces;
+
+WhitePawn = 0x000000000000FF00UL;
+WhiteRook = 0x0000000000000081UL;
+WhiteKnight = 0x0000000000000042UL;
+WhiteBishop = 0x0000000000000024UL;
+WhiteQueen = 0x0000000000000008UL;
+WhiteKing = 0x0000000000000010UL;
+
+BlackPawn = 0x00FF000000000000UL;
+BlackRook = 0x8100000000000000UL;
+BlackKnight = 0x4200000000000000UL;
+BlackBishop = 0x2400000000000000UL;
+BlackQueen = 0x0800000000000000UL;
+BlackKing = 0x1000000000000000UL;
+```
+This approach avoids having to systematically iterate over all 64 squares for
+certain operations.
+
+It is particularly useful for the AI, since the same position may be analyzed
+many times while searching for a move.
+<!-- /lang -->
+<!--==================================================
+  Move generation
+==================================================-->
+<!-- lang:fr -->
 ## La génération des coups
 Une partie importante du projet consiste à générer les coups légaux à partir
 de la position actuelle.
@@ -339,35 +378,7 @@ important lorsque les mêmes opérations sont exécutées en très grand nombre.
 
 
 
-Bitboard representation
-The chessboard is represented using several bitboards.
 
-A bitboard is an integer where each bit corresponds to one square of the
-chessboard. With 64 squares, a 64-bit integer can therefore represent a set of
-board positions directly.
-
-This makes it possible to manipulate multiple squares through a single
-bitwise operation.
-
-Bitboards can, for example, be used to represent the squares occupied by white
-pieces, black pieces, or a specific type of piece.
-```csharp
-// Simplified example
-ulong whitePieces;
-ulong blackPieces;
-
-ulong whitePawns;
-ulong whiteKnights;
-ulong whiteBishops;
-ulong whiteRooks;
-ulong whiteQueens;
-ulong whiteKing;
-```
-This approach avoids having to systematically iterate over all 64 squares for
-certain operations.
-
-It is particularly useful for the AI, since the same position may be analyzed
-many times while searching for a move.
 
 Move generation
 A major part of the project is generating legal moves from the current
