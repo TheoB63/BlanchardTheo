@@ -14,7 +14,7 @@ tags: [C++, OpenGL, Vulkan]
 
 date: 2026-06-01
 
-repo: https://github.com/TheoB63
+repo: https://github.com/TheoB63/Equinox
 ---
 
 ![image](./Equinox/EquinoxEditor.png)
