@@ -171,26 +171,64 @@ The dummy boat allowed us to simulate the players’ physics on it and to move t
 <!-- lang:fr -->
 ## L'environnement
 
+![Environment1](./FishNShip/Environment1.png)
+
 **Conception de l'environnement :**
 
-islands
+![Environment2](./FishNShip/Environment2.png)
+
+Pour l'environnement, nous avons utilisé l'outil **Terrain** d'Unity, ce qui nous a permis de façonner rapidement le relief et de créer les différentes îles du jeu. J'ai pris en charge le terraforming complet ainsi que le placement des éléments de décor de l'île principale et d'une partie des fonds marins.
 
 **Shaders :**
 
-grass magma and death
+| Magma | Grass | Grass |
+| :---: | :---: | :---: |
+| ![Magma](./FishNShip/Magma.gif) | ![Grass](./FishNShip/Grass.gif) | ![Death](./FishNShip/Death.gif) |
+
+Afin d'améliorer l'immersion et d'apporter davantage de dynamisme, nous avons intégré divers effets visuels. J'ai développé plusieurs shaders, notamment un shader de magma, un shader d'herbe ainsi qu'un effet d'explosion lors de la mort du joueur. Ces outils nous ont permis de générer des effets visuels directement en code ou Shader Graph, sans dépendre de textures ou d'animations complexes, ce qui a représenté un gain de temps considérable durant le développement.
 
 **Ciel et cycle jour-nuit :**
+
+| Night | Eclipse |
+| :---: | :---: |
+| ![Night](./FishNShip/Night.png) | ![Eclipse](./FishNShip/Eclipse.png) |
+
+Pour la skybox du jeu, j'ai fait le choix de la créer entièrement via un shader unique, contrôlable par script. Concernant la luminosité, il a été nécessaire de piloter la lumière principale de la scène afin d'obtenir un rendu nocturne cohérent.
+
+Le shader de la skybox a été conçu pour permettre une évolution progressive des couleurs du ciel en fonction de l'heure. Il intègre également les différentes phases lunaires, faisant varier l'apparence de la lune au fil des cycles, avec la possibilité de générer des éclipses.
+
+Pour gérer l'éclairage global, j'ai utilisé le système de Main Light d'Unity, ce qui permet de synchroniser la position, l'orientation et l'intensité de la lumière avec le cycle jour-nuit.
 
 <!-- /lang -->
 <!-- lang:en -->
 ## The Environment
 
+![Environment1](./FishNShip/Environment1.png)
+
 **Environment Design:**
+
+![Environment2](./FishNShip/Environment2.png)
+
+For the environment, we used Unity’s **Terrain** tool, which allowed us to quickly shape the terrain and create the game’s various islands. I handled all the terraforming as well as the placement of environmental elements on the main island and part of the seabed.
 
 **Shaders:**
 
+| Magma | Grass | Grass |
+| :---: | :---: | :---: |
+| ![Magma](./FishNShip/Magma.gif) | ![Grass](./FishNShip/Grass.gif) | ![Death](./FishNShip/Death.gif) |
+
+To enhance immersion and add more dynamism, we incorporated various visual effects. I developed several shaders, including a magma shader, a grass shader, and an explosion effect that triggers when the player dies. These tools allowed us to generate visual effects directly in code or Shader Graph, without relying on textures or complex animations, which saved us a considerable amount of time during development.
+
 **Sky and Day-Night Cycle:**
+
 | Night | Eclipse |
 | :---: | :---: |
 | ![Night](./FishNShip/Night.png) | ![Eclipse](./FishNShip/Eclipse.png) |
+
+For the game’s skybox, I chose to create it entirely using a single, script-controllable shader. Regarding brightness, it was necessary to control the scene’s main light source in order to achieve a consistent nighttime rendering.
+
+The skybox shader was designed to allow for a gradual change in sky colors based on the time of day. It also incorporates the different lunar phases, varying the moon’s appearance throughout its cycles, with the ability to generate eclipses.
+
+To manage the overall lighting, I used Unity’s Main Light system, which allows me to synchronize the light’s position, orientation, and intensity with the day-night cycle.
+
 <!-- /lang -->
