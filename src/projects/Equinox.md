@@ -2,8 +2,8 @@
 title_fr: Moteur Equinox
 title_en: Equinox Engine
 
-summary_fr: Moteur de jeu en C++, fonctionnant avec Vulkan et OpenGL.
-summary_en: A C++ Game Engine, working with Vulkan and OpenGL.
+summary_fr: Moteur de jeu en C++, fonctionnant avec Vulkan.
+summary_en: A C++ Game Engine, working with Vulkan.
 
 alt_fr: _
 alt_en: _

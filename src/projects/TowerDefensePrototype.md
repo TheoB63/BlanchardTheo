@@ -5,11 +5,11 @@
 title_fr: Prototype de Tower Defense
 title_en: TowerDefensePrototype
 
-summary_fr: Un éditeur de niveaux 2D en C# et Unity, avec export binaire et validation, pour que les level designers n'aient plus jamais à me demander un changement.
-summary_en: A 2D level editor in C# and Unity, with binary export and validation, so level designers never had to ask me for a change again.
+summary_fr: Prototype de jeu TowerDefense
+summary_en: Tower Defense Game Prototype
 
-alt_fr: L'éditeur avec ses trois panneaux et un chemin de navigation.
-alt_en: The editor with its three panels and a navigation path.
+alt_fr: _
+alt_en: _
 
 image: ./TowerDefense/TDIcon.png
 
@@ -20,77 +20,20 @@ date: 2025-10-01
 repo: https://github.com/your-username/level-editor
 ---
 
-<!-- lang:fr -->
+## Le Jeu
 
-## Le contexte
+Projet solo : création d’un jeu de type Tower Defense sur Unity.
 
-Les niveaux étaient dessinés dans un outil externe, puis recopiés à la main dans
-le jeu. Chaque modification demandait une conversion, et les deux versions
-finissaient par diverger.
+L’objectif principal de ce projet a été de comprendre la gestion des données entre les scènes de Unity, tout en approfondissant ma maîtrise de l’UI et des Actions (C#), avec une logique Data-Driven. Ce qui m’a permis de mieux structurer les données entre les différents systèmes du jeu et de gagner en clarté sur l’architecture globale.
 
-## Ce que fait l'outil
-
-- Une fenêtre d'édition Unity qui peint directement sur la Scene view.
-- Détection automatique des zones praticables à partir des collisions.
-- Liens à sens unique (échelles, sauts, portes) dessinés à la flèche.
-- Export en binaire : un octet par case, 4 bits de coût et 4 bits de drapeaux.
-- Un lecteur runtime d'environ 80 lignes, sans dépendance à l'éditeur.
-
-## Le format
-
-```csharp
-// bits 0-3 : classe de coût (0 = bloquant, 1 = normal, 2 = lent, ...)
-// bit 4    : un lien à sens unique est présent
-// bit 5    : point de saut
-public static byte Encode(Cell c) =>
-    (byte)((c.cost & 0x0F) | (c.link ? 0x10 : 0) | (c.jump ? 0x20 : 0));
-```
-
-Un niveau de 256×256 tient dans 64 ko, ce qui reste confortable pour le cache.
-
-## Ce que j'en retiens
-
-- L'export est incrémental : seules les cases modifiées sont réencodées, ce qui
-  garde l'opération sous la milliseconde.
-- Chaque trait de pinceau forme un groupe d'annulation, donc un Ctrl+Z retire
-  toute la zone peinte et pas une seule case.
-- Le temps passé sur cet éditeur a été rentabilisé en deux semaines.
-
+En cours d'ecriture...
 <!-- /lang -->
-
 <!-- lang:en -->
+## The Game
 
-## Context
+Solo project: creating a tower defense game in Unity.
 
-Levels were drawn in an external tool, then copied by hand into the game. Every
-change needed a conversion, and the two versions ended up drifting apart.
+The main goal of this project was to understand data management between Unity scenes, while deepening my mastery of UI and Actions (C#) using a data-driven approach. This allowed me to better structure the data between the game’s various systems and gain clarity on the overall architecture.
 
-## What the tool does
-
-- A Unity editor window that paints directly over the Scene view.
-- Automatic walkable-area detection from the tile collisions.
-- One-way links (ladders, drops, doors) drawn as arrows.
-- Binary export: one byte per cell, 4 bits of cost and 4 bits of flags.
-- A runtime reader of about 80 lines, with no dependency on the editor.
-
-## The format
-
-```csharp
-// bits 0-3 : cost class (0 = blocked, 1 = normal, 2 = slow, ...)
-// bit 4    : a one-way link is present
-// bit 5    : jump point
-public static byte Encode(Cell c) =>
-    (byte)((c.cost & 0x0F) | (c.link ? 0x10 : 0) | (c.jump ? 0x20 : 0));
-```
-
-A 256×256 level fits in 64 kB, which stays comfortable for the cache.
-
-## What I take from it
-
-- The export is incremental: only the dirty cells are re-encoded, which keeps it
-  under a millisecond.
-- Each brush stroke is one undo group, so Ctrl+Z removes the whole painted
-  region instead of a single cell.
-- The time spent on this editor paid for itself in two weeks.
-
+Currently being written...
 <!-- /lang -->

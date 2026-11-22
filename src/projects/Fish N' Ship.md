@@ -5,8 +5,8 @@ title_en: Fish N' Ship
 summary_fr: Jeux de type friend slop, ayant pour objectif la navigation, l'exploration et la construction de son bateau.
 summary_en: Games in the friend slop genre, where the aim is to sail, explore and build your own boat.
 
-alt_fr: L'éditeur avec ses trois panneaux et un chemin de navigation.
-alt_en: The editor with its three panels and a navigation path.
+alt_fr: _
+alt_en: _
 
 image: ./FishNShip/FishNShipIcon.png
 
@@ -14,7 +14,7 @@ tags: [C#, Unity, Online]
 
 date: 2026-01-01
 
-repo: https://github.com/your-username/level-editor
+repo: http://github.com/StellarVault-dev/ProxyPirate
 ---
 
 <!--==================================================
