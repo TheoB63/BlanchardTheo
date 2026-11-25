@@ -16,8 +16,6 @@ image: ./TowerDefense/TDIcon.png
 tags: [C#, Unity, Tools]
 
 date: 2025-10-01
-
-repo: https://github.com/your-username/level-editor
 ---
 
 ## Le Jeu

@@ -43,7 +43,7 @@ export const translations = {
 	},
 
 	// --- Project card / page ----------------------------------------------
-	'project.repo': { fr: 'Code source', en: 'Source code' },
+	'project.repo': { fr: 'Voir le projet', en: 'View the project' },
 	'project.demo': { fr: 'Démo', en: 'Demo' },
 	'project.noImage': { fr: 'Pas encore d’image', en: 'No image yet' },
 	'project.backToList': { fr: '← Retour aux projets', en: '← Back to projects' },

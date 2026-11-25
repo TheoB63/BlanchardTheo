@@ -17,7 +17,7 @@ tags: [C, CSFML]
 
 date: 2024-01-01
 
-repo: https://github.com/your-username/level-editor
+repo: https://www.creajeux.fr/projet/destiny-of-gobo/
 ---
 
 <!-- lang:fr -->

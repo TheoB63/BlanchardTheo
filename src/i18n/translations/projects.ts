@@ -10,7 +10,7 @@ export const fr = {
 	'projects.emptyHint':
 		'Copiez un des fichiers d’exemple et modifiez-le, ou vérifiez ceci : le fichier est bien dans src/projects/, l’extension est .md, et le frontmatter contient au moins title_fr et title_en. Le terminal affiche à chaque lancement la liste des projets trouvés (ligne [projects]). En cas de doute, supprimez node_modules/.astro puis relancez.',
 
-	'project.repo': 'Code source',
+	'project.repo': 'Voir le projet',
 	'project.demo': 'Démo',
 	'project.noImage': 'Pas encore d’image',
 	'project.backToList': '← Retour aux projets',
@@ -26,7 +26,7 @@ export const en: typeof fr = {
 	'projects.emptyHint':
 		'Copy one of the example files and edit it, or check this: the file is inside src/projects/, the extension is .md, and the frontmatter has at least title_fr and title_en. The terminal prints the list of detected projects on every start (line starting with [projects]). When in doubt, delete node_modules/.astro and start again.',
 
-	'project.repo': 'Source code',
+	'project.repo': 'View the project',
 	'project.demo': 'Demo',
 	'project.noImage': 'No image yet',
 	'project.backToList': '← Back to projects',

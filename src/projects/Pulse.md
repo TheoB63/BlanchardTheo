@@ -16,8 +16,6 @@ image: ./Pulse/PulseIcon.png
 tags: [C#, Unity, Tools]
 
 date: 2025-09-01
-
-repo: https://github.com/StellarVault-dev/Rythm
 ---
 
 <!--==================================================
@@ -36,9 +34,10 @@ Mon travail effectué sur ce projet :
 - Création du deuxième mode de jeu.
 - Création d'un éditeur de niveau dédié au deuxième mode avec timeline, afin d'avoir un aperçu direct du rendu en jeu.
 
+En cours d'ecriture...
+
 ![Editor](./Pulse/Editor.png)
 
-En cours d'ecriture...
 <!-- /lang -->
 <!-- lang:en -->
 ## The Game
@@ -53,7 +52,8 @@ My work on this project:
 - Creation of the second game mode.
 - Created a level editor dedicated to the second mode, complete with a timeline, to provide a direct preview of how the level will look in-game.
 
+Currently being written...
+
 ![Editor](./Pulse/Editor.png)
 
-Currently being written...
 <!-- /lang -->

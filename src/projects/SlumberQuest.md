@@ -16,8 +16,6 @@ image: ./SlumberQuest/SlumberQuestIcon.jpg
 tags: [Lua, Love2D]
 
 date: 2023-01-01
-
-repo: https://github.com/your-username/level-editor
 ---
 
 <!-- lang:fr -->

@@ -5,11 +5,11 @@
 title_fr: Godbreak
 title_en: Godbreak
 
-summary_fr: Un éditeur de niveaux 2D en C# et Unity, avec export binaire et validation, pour que les level designers n'aient plus jamais à me demander un changement.
-summary_en: A 2D level editor in C# and Unity, with binary export and validation, so level designers never had to ask me for a change again.
+summary_fr: Bac à sable et Génération procédurale
+summary_en: Sandbox and Procedural Generation
 
-alt_fr: L'éditeur avec ses trois panneaux et un chemin de navigation.
-alt_en: The editor with its three panels and a navigation path.
+alt_fr: _
+alt_en: _
 
 image: ./Godbreak/GodbreakIcon.png
 
@@ -17,80 +17,45 @@ tags: [C++, SFML, Tools]
 
 date: 2025-01-01
 
-repo: https://github.com/your-username/level-editor
+repo: https://www.creajeux.fr/projet/godbreak/
 ---
 
+<!--==================================================
+  The Game
+==================================================-->
 <!-- lang:fr -->
+## Le Jeu
 
-## Le contexte
+![Game](./Godbreak/Game.png)
 
-Les niveaux étaient dessinés dans un outil externe, puis recopiés à la main dans
-le jeu. Chaque modification demandait une conversion, et les deux versions
-finissaient par diverger.
+GodBreak est un jeu de type bac à sable, développé en SFML et disponible uniquement sur PC. Le jeu comprend un système de construction et de fabrication, ainsi que du combat contre des monstres et des boss.
+L'objectif du jeu consiste à explorer, bâtir un monde à son image et affronter le créateur de ce monde.
 
-## Ce que fait l'outil
+Mon travail effectué sur ce projet :
+– Création du monde de manière procédurale. Génération du terrain, des structures et du contenu des coffres trouvable dans les structures.
+– Gestion du système de construction.
+– Sauvegarde du monde sous forme de chunk et des inventaires.
 
-- Une fenêtre d'édition Unity qui peint directement sur la Scene view.
-- Détection automatique des zones praticables à partir des collisions.
-- Liens à sens unique (échelles, sauts, portes) dessinés à la flèche.
-- Export en binaire : un octet par case, 4 bits de coût et 4 bits de drapeaux.
-- Un lecteur runtime d'environ 80 lignes, sans dépendance à l'éditeur.
+En cours d'écriture…
 
-## Le format
-
-```csharp
-// bits 0-3 : classe de coût (0 = bloquant, 1 = normal, 2 = lent, ...)
-// bit 4    : un lien à sens unique est présent
-// bit 5    : point de saut
-public static byte Encode(Cell c) =>
-    (byte)((c.cost & 0x0F) | (c.link ? 0x10 : 0) | (c.jump ? 0x20 : 0));
-```
-
-Un niveau de 256×256 tient dans 64 ko, ce qui reste confortable pour le cache.
-
-## Ce que j'en retiens
-
-- L'export est incrémental : seules les cases modifiées sont réencodées, ce qui
-  garde l'opération sous la milliseconde.
-- Chaque trait de pinceau forme un groupe d'annulation, donc un Ctrl+Z retire
-  toute la zone peinte et pas une seule case.
-- Le temps passé sur cet éditeur a été rentabilisé en deux semaines.
+![World](./Godbreak/World.png)
 
 <!-- /lang -->
-
 <!-- lang:en -->
+## Le Jeu
 
-## Context
+![Game](./Godbreak/Game.png)
 
-Levels were drawn in an external tool, then copied by hand into the game. Every
-change needed a conversion, and the two versions ended up drifting apart.
+GodBreak est un jeu de type bac à sable, développé en SFML et disponible uniquement sur PC. Le jeu comprend un système de construction et de fabrication, ainsi que du combat contre des monstres et des boss.
+L'objectif du jeu consiste à explorer, bâtir un monde à son image et affronter le créateur de ce monde.
 
-## What the tool does
+Mon travail effectué sur ce projet :
+– Création du monde de manière procédurale. Génération du terrain, des structures et du contenu des coffres trouvable dans les structures.
+– Gestion du système de construction.
+– Sauvegarde du monde sous forme de chunk et des inventaires.
 
-- A Unity editor window that paints directly over the Scene view.
-- Automatic walkable-area detection from the tile collisions.
-- One-way links (ladders, drops, doors) drawn as arrows.
-- Binary export: one byte per cell, 4 bits of cost and 4 bits of flags.
-- A runtime reader of about 80 lines, with no dependency on the editor.
+En cours d'écriture…
 
-## The format
-
-```csharp
-// bits 0-3 : cost class (0 = blocked, 1 = normal, 2 = slow, ...)
-// bit 4    : a one-way link is present
-// bit 5    : jump point
-public static byte Encode(Cell c) =>
-    (byte)((c.cost & 0x0F) | (c.link ? 0x10 : 0) | (c.jump ? 0x20 : 0));
-```
-
-A 256×256 level fits in 64 kB, which stays comfortable for the cache.
-
-## What I take from it
-
-- The export is incremental: only the dirty cells are re-encoded, which keeps it
-  under a millisecond.
-- Each brush stroke is one undo group, so Ctrl+Z removes the whole painted
-  region instead of a single cell.
-- The time spent on this editor paid for itself in two weeks.
+![World](./Godbreak/World.png)
 
 <!-- /lang -->

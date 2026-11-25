@@ -5,92 +5,53 @@
 title_fr: Hexatak
 title_en: Hexatak
 
-summary_fr: Un éditeur de niveaux 2D en C# et Unity, avec export binaire et validation, pour que les level designers n'aient plus jamais à me demander un changement.
-summary_en: A 2D level editor in C# and Unity, with binary export and validation, so level designers never had to ask me for a change again.
+summary_fr: Tour par tour en multijoueur
+summary_en: Turn-by-turn multiplayer
 
-alt_fr: L'éditeur avec ses trois panneaux et un chemin de navigation.
-alt_en: The editor with its three panels and a navigation path.
+alt_fr: _
+alt_en: _
 
 image: ./Hexatak/HexatakIcon.jpg
 
 tags: [C++, SFML, LAN]
 
 date: 2025-01-01
-
-repo: https://github.com/your-username/level-editor
 ---
 
+<!--==================================================
+  The Game
+==================================================-->
 <!-- lang:fr -->
+## Le Jeu
 
-## Le contexte
+![Game](./Hexatak/Game.jpg)
 
-Les niveaux étaient dessinés dans un outil externe, puis recopiés à la main dans
-le jeu. Chaque modification demandait une conversion, et les deux versions
-finissaient par diverger.
+Hexatak est un jeu multijoueur au tour par tour, conçu en CSFML et exclusivement accessible sur ordinateur.
+La maquette du jeu a été réalisée en carton pour la tester en tant que jeu de société physique et confirmer ainsi les règles du jeu.
 
-## Ce que fait l'outil
+Le jeu propose quatre héros, chacun doté d'une caractéristique distinctive et d'une compétence exclusive. Chaque participant a la possibilité de disposer des unités sur le plateau de jeu. Il y a quatre classes présentes dans le jeu : guerrier, archer, chevalier et mage. Chaque pièce a un coût lorsqu'elle est placée sur le plateau.
 
-- Une fenêtre d'édition Unity qui peint directement sur la Scene view.
-- Détection automatique des zones praticables à partir des collisions.
-- Liens à sens unique (échelles, sauts, portes) dessinés à la flèche.
-- Export en binaire : un octet par case, 4 bits de coût et 4 bits de drapeaux.
-- Un lecteur runtime d'environ 80 lignes, sans dépendance à l'éditeur.
+Sur ce projet, ma tâche a consisté à gérer les attaques et les déplacements des unités. Le type de terrain affecte le nombre de cases sur lesquelles on peut se déplacer ainsi que la portée d'attaque des unités.
+Par exemple, une unité ne peut pas se déplacer directement d'une plaine à une montagne. Elle est obligée de passer par une case intermédiaire. Sur la neige et dans la forêt, les mouvements des unités sont restreints, tandis que dans l'eau, elles ne peuvent progresser que d'une seule case à chaque tour.
 
-## Le format
-
-```csharp
-// bits 0-3 : classe de coût (0 = bloquant, 1 = normal, 2 = lent, ...)
-// bit 4    : un lien à sens unique est présent
-// bit 5    : point de saut
-public static byte Encode(Cell c) =>
-    (byte)((c.cost & 0x0F) | (c.link ? 0x10 : 0) | (c.jump ? 0x20 : 0));
-```
-
-Un niveau de 256×256 tient dans 64 ko, ce qui reste confortable pour le cache.
-
-## Ce que j'en retiens
-
-- L'export est incrémental : seules les cases modifiées sont réencodées, ce qui
-  garde l'opération sous la milliseconde.
-- Chaque trait de pinceau forme un groupe d'annulation, donc un Ctrl+Z retire
-  toute la zone peinte et pas une seule case.
-- Le temps passé sur cet éditeur a été rentabilisé en deux semaines.
+En cours d'écriture…
 
 <!-- /lang -->
-
 <!-- lang:en -->
+## Le Jeu
 
-## Context
+![Game](./Hexatak/Game.jpg)
 
-Levels were drawn in an external tool, then copied by hand into the game. Every
-change needed a conversion, and the two versions ended up drifting apart.
+Hexatak is a turn-based multiplayer game, developed in CSFML and available exclusively on computers.
+A cardboard prototype of the game was created to test it as a physical board game and thereby confirm the game rules.
 
-## What the tool does
+The game features four heroes, each with a distinctive trait and a unique ability. Each player can place units on the game board. There are four classes in the game: warrior, archer, knight, and mage. Each unit has a cost when placed on the board.
 
-- A Unity editor window that paints directly over the Scene view.
-- Automatic walkable-area detection from the tile collisions.
-- One-way links (ladders, drops, doors) drawn as arrows.
-- Binary export: one byte per cell, 4 bits of cost and 4 bits of flags.
-- A runtime reader of about 80 lines, with no dependency on the editor.
+For this project, my task was to manage unit attacks and movements. The type of terrain affects the number of spaces a unit can move and its attack range.
+For example, a unit cannot move directly from a plain to a mountain. It must pass through an intermediate square. On snow and in the forest, unit movement is restricted, while in water, units can only move one square per turn.
 
-## The format
+Currently being written…
 
-```csharp
-// bits 0-3 : cost class (0 = blocked, 1 = normal, 2 = slow, ...)
-// bit 4    : a one-way link is present
-// bit 5    : jump point
-public static byte Encode(Cell c) =>
-    (byte)((c.cost & 0x0F) | (c.link ? 0x10 : 0) | (c.jump ? 0x20 : 0));
-```
-
-A 256×256 level fits in 64 kB, which stays comfortable for the cache.
-
-## What I take from it
-
-- The export is incremental: only the dirty cells are re-encoded, which keeps it
-  under a millisecond.
-- Each brush stroke is one undo group, so Ctrl+Z removes the whole painted
-  region instead of a single cell.
-- The time spent on this editor paid for itself in two weeks.
+![Menu](./Hexatak/Menu.jpg)
 
 <!-- /lang -->
