@@ -5,11 +5,11 @@
 title_fr: DestinyOfGobo
 title_en: DestinyOfGobo
 
-summary_fr: Un éditeur de niveaux 2D en C# et Unity, avec export binaire et validation, pour que les level designers n'aient plus jamais à me demander un changement.
-summary_en: A 2D level editor in C# and Unity, with binary export and validation, so level designers never had to ask me for a change again.
+summary_fr: RPG tour par tour
+summary_en: Turn based RPG
 
-alt_fr: L'éditeur avec ses trois panneaux et un chemin de navigation.
-alt_en: The editor with its three panels and a navigation path.
+alt_fr: _
+alt_en: _
 
 image: ./DestinyOfGobo/DestinyOfGoboIcon.jpg
 
@@ -20,77 +20,52 @@ date: 2024-01-01
 repo: https://www.creajeux.fr/projet/destiny-of-gobo/
 ---
 
+<!--==================================================
+  The Game
+==================================================-->
 <!-- lang:fr -->
+## Le Jeu
 
-## Le contexte
+![Game](./DestinyOfGobo/Game.png)
 
-Les niveaux étaient dessinés dans un outil externe, puis recopiés à la main dans
-le jeu. Chaque modification demandait une conversion, et les deux versions
-finissaient par diverger.
+Destiny of Gobo est un jeu de type RPG tour par tour, développé en CSFML et disponible uniquement sur PC.
+Le jeu se base autour de la résolution d'énigmes présentes à plusieurs endroits et de combats en tour par tour afin de sauver le village.
 
-## Ce que fait l'outil
+Mon travail effectué sur ce projet :
+– Création de l'architecture du jeu, afin de faciliter le développement et l'intégration de nouvelles features.
+– Création du système d'animation
+– Créations des menus et options
+– Gestion et écritures des sauvegardes
+– Création des PNJ, quêtes et dialogues ; ainsi qu'un système de création des PNJ et dialogues simplifié à l'aide de fichiers .txt
+– Création du menu de changement de map, et gestion des changements de map
+– Aide à la création des énigmes
+– Aide à l'intégration des différentes features du jeu
+– Aide à la création de l'inventaire
 
-- Une fenêtre d'édition Unity qui peint directement sur la Scene view.
-- Détection automatique des zones praticables à partir des collisions.
-- Liens à sens unique (échelles, sauts, portes) dessinés à la flèche.
-- Export en binaire : un octet par case, 4 bits de coût et 4 bits de drapeaux.
-- Un lecteur runtime d'environ 80 lignes, sans dépendance à l'éditeur.
-
-## Le format
-
-```csharp
-// bits 0-3 : classe de coût (0 = bloquant, 1 = normal, 2 = lent, ...)
-// bit 4    : un lien à sens unique est présent
-// bit 5    : point de saut
-public static byte Encode(Cell c) =>
-    (byte)((c.cost & 0x0F) | (c.link ? 0x10 : 0) | (c.jump ? 0x20 : 0));
-```
-
-Un niveau de 256×256 tient dans 64 ko, ce qui reste confortable pour le cache.
-
-## Ce que j'en retiens
-
-- L'export est incrémental : seules les cases modifiées sont réencodées, ce qui
-  garde l'opération sous la milliseconde.
-- Chaque trait de pinceau forme un groupe d'annulation, donc un Ctrl+Z retire
-  toute la zone peinte et pas une seule case.
-- Le temps passé sur cet éditeur a été rentabilisé en deux semaines.
+En cours d'écriture…
 
 <!-- /lang -->
-
 <!-- lang:en -->
+## Le Jeu
 
-## Context
+![Game](./DestinyOfGobo/Game.png)
 
-Levels were drawn in an external tool, then copied by hand into the game. Every
-change needed a conversion, and the two versions ended up drifting apart.
+Destiny of Gobo is a turn-based RPG developed in CSFML and available exclusively on PC.
+The game revolves around solving puzzles found in various locations and engaging in turn-based combat to save the village.
 
-## What the tool does
+My contributions to this project:
+– Designing the game architecture to facilitate development and the integration of new features.
+– Creating the animation system
+– Designing the menus and options
+– Managing and implementing save files
+– Created NPCs, quests, and dialogues; as well as a simplified system for creating NPCs and dialogues using .txt files
+– Created the map-switching menu and managed map transitions
+– Assisted with puzzle design
+– Assisted with the integration of various game features
+– Assisted with the creation of the inventory
 
-- A Unity editor window that paints directly over the Scene view.
-- Automatic walkable-area detection from the tile collisions.
-- One-way links (ladders, drops, doors) drawn as arrows.
-- Binary export: one byte per cell, 4 bits of cost and 4 bits of flags.
-- A runtime reader of about 80 lines, with no dependency on the editor.
+Currently being written...
 
-## The format
-
-```csharp
-// bits 0-3 : cost class (0 = blocked, 1 = normal, 2 = slow, ...)
-// bit 4    : a one-way link is present
-// bit 5    : jump point
-public static byte Encode(Cell c) =>
-    (byte)((c.cost & 0x0F) | (c.link ? 0x10 : 0) | (c.jump ? 0x20 : 0));
-```
-
-A 256×256 level fits in 64 kB, which stays comfortable for the cache.
-
-## What I take from it
-
-- The export is incremental: only the dirty cells are re-encoded, which keeps it
-  under a millisecond.
-- Each brush stroke is one undo group, so Ctrl+Z removes the whole painted
-  region instead of a single cell.
-- The time spent on this editor paid for itself in two weeks.
+![World](./Godbreak/World.png)
 
 <!-- /lang -->

@@ -26,7 +26,7 @@ date: 2025-01-01
 
 ![Game](./Hexatak/Game.jpg)
 
-Hexatak est un jeu multijoueur au tour par tour, conçu en CSFML et exclusivement accessible sur ordinateur.
+Hexatak est un jeu multijoueur au tour par tour, conçu en SFML et exclusivement accessible sur ordinateur.
 La maquette du jeu a été réalisée en carton pour la tester en tant que jeu de société physique et confirmer ainsi les règles du jeu.
 
 Le jeu propose quatre héros, chacun doté d'une caractéristique distinctive et d'une compétence exclusive. Chaque participant a la possibilité de disposer des unités sur le plateau de jeu. Il y a quatre classes présentes dans le jeu : guerrier, archer, chevalier et mage. Chaque pièce a un coût lorsqu'elle est placée sur le plateau.
