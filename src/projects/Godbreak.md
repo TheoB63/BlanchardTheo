@@ -32,9 +32,9 @@ GodBreak est un jeu de type bac à sable, développé en SFML et disponible uniq
 L'objectif du jeu consiste à explorer, bâtir un monde à son image et affronter le créateur de ce monde.
 
 Mon travail effectué sur ce projet :
-– Création du monde de manière procédurale. Génération du terrain, des structures et du contenu des coffres trouvable dans les structures.
-– Gestion du système de construction.
-– Sauvegarde du monde sous forme de chunk et des inventaires.
+- Création du monde de manière procédurale. Génération du terrain, des structures et du contenu des coffres trouvable dans les structures.
+- Gestion du système de construction.
+- Sauvegarde du monde sous forme de chunk et des inventaires.
 
 En cours d'écriture…
 
@@ -50,9 +50,9 @@ GodBreak is a sandbox game developed in SFML and available exclusively on PC. Th
 The goal of the game is to explore, build a world in your own image, and face off against the creator of that world.
 
 My work on this project:
-– Procedural world generation. Generating terrain, structures, and the contents of chests found within structures.
-– Managing the building system.
-– Saving the world in chunks and saving player inventories.
+- Procedural world generation. Generating terrain, structures, and the contents of chests found within structures.
+- Managing the building system.
+- Saving the world in chunks and saving player inventories.
 
 Currently being written...
 

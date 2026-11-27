@@ -24,12 +24,13 @@ date: 2023-01-01
 <!-- lang:fr -->
 ## Le Jeu
 
-![Game](./DestinyOfGobo/Game.png)
+<!-- TODO: change image with real screen -->
+![Game](./SlumberQuest/Game.png)
 
 SlumberQuest
 
 Mon travail effectué sur ce projet :
-- 
+- Systeme de Combat
 
 En cours d'écriture…
 
@@ -42,10 +43,8 @@ En cours d'écriture…
 SlumberQuest
 
 My contributions to this project:
-– 
+- Battle System
 
 Currently being written...
-
-![World](./Godbreak/World.png)
 
 <!-- /lang -->
